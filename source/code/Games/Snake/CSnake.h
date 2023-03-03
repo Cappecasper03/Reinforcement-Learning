@@ -12,7 +12,7 @@ public:
 	CSnake( void );
 	~CSnake( void );
 
-	void Update( float DeltaTime );
+	void Update( void );
 	void Render( void );
 
 private:

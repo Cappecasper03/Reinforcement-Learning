@@ -19,7 +19,7 @@ void CGameSnake::Update( float DeltaTime )
 		return;
 
 	m_FixedUpdateTimer.Update();
-	m_Snake.Update( DeltaTime );
+	m_Snake.Update();
 }
 
 void CGameSnake::Render( void )

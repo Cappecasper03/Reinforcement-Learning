@@ -46,13 +46,15 @@ CSnake::CSnake( void )
 	rPosition.x = NewPosition.x - m_BodyHalfWidth;
 	rPosition.y = NewPosition.y - rGrid.GetTileSize() / 2;
 	m_VerticesBody.append( Vertex );
+
+	Update();
 }
 
 CSnake::~CSnake( void )
 {
 }
 
-void CSnake::Update( float DeltaTime )
+void CSnake::Update( void )
 {
 	m_Body = m_Head;
 	m_Head.GridPosition += m_Head.Direction;

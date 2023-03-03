@@ -1,8 +1,7 @@
 sfmlPath = "../../sfml"
 
-filter {}
-    includedirs { sfmlPath.."/include" }
-    libdirs { sfmlPath.."/lib" }
+includedirs { sfmlPath.."/include" }
+libdirs { sfmlPath.."/lib" }
 
 filter "configurations:Debug"
     links { "sfml-graphics-d", "sfml-window-d", "sfml-system-d" }

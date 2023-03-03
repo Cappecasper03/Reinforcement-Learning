@@ -3,6 +3,7 @@
 #include "../IGame.h"
 #include "CSingleton.h"
 #include "CGrid.h"
+#include "CSnake.h"
 #include "CFood.h"
 
 class CGameSnake : public IGame, public CSingleton<CGameSnake>
@@ -15,9 +16,11 @@ public:
 	void Render( void ) override;
 
 	CGrid& GetGrid( void ) { return m_Grid; }
+	CSnake& GetSnake( void ) { return m_Snake; }
 	CFood& GetFood( void ) { return m_Food; }
 
 private:
 	CGrid m_Grid;
+	CSnake m_Snake;
 	CFood m_Food;
 };

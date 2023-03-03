@@ -3,12 +3,15 @@
 #include "CRandom.h"
 
 CFood::CFood( void )
-	: m_Vertices( sf::TriangleFan, 10 )
+	: m_Vertices( sf::TriangleFan, 12 )
 	, m_GridPos( -1, -1 )
 	, m_Radius()
 	, m_rGame( CGameSnake::GetInstance() )
 {
 	m_Radius = m_rGame.GetGrid().GetTileSize() * .5f / 2;
+
+	for( unsigned i = 0; i < m_Vertices.getVertexCount(); i++ )
+		m_Vertices[i].color = sf::Color::Red;
 
 	RandomizePosition();
 }

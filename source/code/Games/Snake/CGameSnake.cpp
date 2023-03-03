@@ -2,6 +2,7 @@
 
 CGameSnake::CGameSnake( void )
 	: m_FixedUpdateTimer()
+	, m_FixedUpdateTarget( 1 )
 	, m_Grid( 10 )
 	, m_Snake()
 	, m_Food()
@@ -14,7 +15,7 @@ CGameSnake::~CGameSnake( void )
 
 void CGameSnake::Update( float DeltaTime )
 {
-	if( m_FixedUpdateTimer.GetDeltaTime( false ) < 1 )
+	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
 		return;
 
 	m_FixedUpdateTimer.Update();

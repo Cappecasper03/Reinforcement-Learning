@@ -22,6 +22,7 @@ public:
 
 private:
 	CTimer m_FixedUpdateTimer;
+	float m_FixedUpdateTarget;
 
 	CGrid m_Grid;
 	CSnake m_Snake;

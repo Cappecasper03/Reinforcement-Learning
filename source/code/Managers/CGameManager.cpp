@@ -26,8 +26,19 @@ void CGameManager::Run( void )
 			if( WindowEvent.type == sf::Event::Closed || sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
 				m_Window.close();
 
+			Update( Timer.GetDeltaTime() );
+
 			m_Window.clear( sf::Color::Black );
+			Render();
 			m_Window.display();
 		}
 	}
+}
+
+void CGameManager::Update( float DeltaTime )
+{
+}
+
+void CGameManager::Render( void )
+{
 }

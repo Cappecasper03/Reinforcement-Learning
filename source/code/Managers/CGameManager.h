@@ -15,6 +15,9 @@ public:
 
 	void Run( void );
 
+	void Update( float DeltaTime );
+	void Render( void );
+
 private:
 	sf::RenderWindow m_Window;
 

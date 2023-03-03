@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CSingleton.h"
-#include "CVector.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -18,8 +17,10 @@ public:
 	void Update( float DeltaTime );
 	void Render( void );
 
+	sf::RenderWindow& GetWindow( void ) { return m_Window; }
+
 private:
 	sf::RenderWindow m_Window;
 
-	CVector<IGame*> m_Games;
+	IGame* m_pGame;
 };

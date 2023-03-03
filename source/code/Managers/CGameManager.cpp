@@ -1,16 +1,20 @@
 #include "CGameManager.h"
 #include "CTimer.h"
+#include "Games/IGame.h"
+#include "Games/Snake/CGameSnake.h"
 
 #include <SFML/Window/Event.hpp>
 
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
-	, m_Games()
+	, m_pGame( new CGameSnake )
 {
 }
 
 CGameManager::~CGameManager( void )
 {
+	if( m_pGame )
+		delete m_pGame;
 }
 
 void CGameManager::Run( void )
@@ -37,8 +41,12 @@ void CGameManager::Run( void )
 
 void CGameManager::Update( float DeltaTime )
 {
+	if( m_pGame )
+		m_pGame->Update( DeltaTime );
 }
 
 void CGameManager::Render( void )
 {
+	if( m_pGame )
+		m_pGame->Render();
 }

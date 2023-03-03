@@ -36,7 +36,7 @@ private:
 	std::chrono::high_resolution_clock::time_point m_LastUpdate;
 };
 
-CTimer::CTimer( void )
+inline CTimer::CTimer( void )
 	: m_Start( std::chrono::high_resolution_clock::now() )
 	, m_LastUpdate( std::chrono::high_resolution_clock::now() )
 {

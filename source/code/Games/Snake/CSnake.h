@@ -22,11 +22,15 @@ private:
 		sf::Vector2f Direction;
 	};
 
+	void UpdateHeadVertices( void );
+	void UpdateBodyVertices( void );
 	void AddBody( void );
 
 	float m_HeadRadius;
-	CVector<SBody> m_Bodys;
+	float m_BodyHalfWidth;
+	SBody m_Head;
 	sf::VertexArray m_VerticesHead;
+	SBody m_Body;
 	sf::VertexArray m_VerticesBody;
 
 	CGameSnake& m_rGame;

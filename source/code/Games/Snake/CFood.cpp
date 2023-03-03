@@ -29,8 +29,8 @@ void CFood::RandomizePosition( void )
 
 	do
 	{
-		NewPosition.x = Random( 0, GridSize );
-		NewPosition.y = Random( 0, GridSize );
+		NewPosition.x = Random( 0, GridSize - 1 );
+		NewPosition.y = Random( 0, GridSize - 1 );
 	} while( rPosition == NewPosition );
 
 	m_GridPos = NewPosition;

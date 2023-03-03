@@ -1,7 +1,8 @@
 #include "CGameSnake.h"
 
 CGameSnake::CGameSnake( void )
-	: m_Grid( 10 )
+	: m_FixedUpdateTimer()
+	, m_Grid( 10 )
 	, m_Snake()
 	, m_Food()
 {
@@ -13,6 +14,11 @@ CGameSnake::~CGameSnake( void )
 
 void CGameSnake::Update( float DeltaTime )
 {
+	if( m_FixedUpdateTimer.GetDeltaTime( false ) < 1 )
+		return;
+
+	m_FixedUpdateTimer.Update();
+	m_Snake.Update( DeltaTime );
 }
 
 void CGameSnake::Render( void )

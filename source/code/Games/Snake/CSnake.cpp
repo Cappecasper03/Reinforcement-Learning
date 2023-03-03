@@ -55,9 +55,9 @@ CSnake::~CSnake( void )
 void CSnake::Update( float DeltaTime )
 {
 	m_Body = m_Head;
-	UpdateBodyVertices();
-
 	m_Head.GridPosition += m_Head.Direction;
+
+	UpdateBodyVertices();
 	UpdateHeadVertices();
 }
 
@@ -97,6 +97,9 @@ void CSnake::UpdateHeadVertices( void )
 
 void CSnake::UpdateBodyVertices( void )
 {
+	// 6 first vertices is the first body
+	// 2 first is in head to connect head and body
+	// next 4 is fills first body tile 
 }
 
 void CSnake::AddBody( void )

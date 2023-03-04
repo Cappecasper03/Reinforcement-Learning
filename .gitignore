@@ -40,3 +40,4 @@ build/*
 # Exclude
 !utils/**
 !build/*.dll
+!build/data

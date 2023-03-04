@@ -9,6 +9,7 @@ workspace( workspace_name )
         cppdialect "C++20"
         location "build/vs"
         targetdir "build"
+        debugdir "build"
         objdir "build/obj/%{cfg.buildcfg}"
         targetname( project_name )
         architecture "x86_64"

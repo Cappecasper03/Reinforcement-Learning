@@ -2,6 +2,7 @@
 #include "CTimer.h"
 #include "Games/IGame.h"
 #include "Games/Snake/CGameSnake.h"
+#include "Managers/CFontManager.h"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Time.hpp>
@@ -10,12 +11,18 @@
 
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
-	, m_pGame( new CGameSnake )
+	, m_pGame( nullptr )
 {
+	CFontManager::Initialize();
+	CFontManager::GetInstance().Load( "batmfa__.ttf", "ForeverBatman" );
+
+	m_pGame = new CGameSnake;
 }
 
 CGameManager::~CGameManager( void )
 {
+	CFontManager::Deinitialize();
+
 	if( m_pGame )
 		delete m_pGame;
 }

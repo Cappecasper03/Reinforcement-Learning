@@ -6,6 +6,7 @@
 #include "CSnake.h"
 #include "CFood.h"
 #include "CTimer.h"
+#include "CVector.h"
 
 class CGameSnake : public IGame, public CSingleton<CGameSnake>
 {
@@ -28,4 +29,8 @@ private:
 	CGrid m_Grid;
 	CSnake m_Snake;
 	CFood m_Food;
+
+	sf::Text m_FPS;
+	CVector<unsigned> m_FPSBuffer;
+	unsigned m_FPSIndex;
 };

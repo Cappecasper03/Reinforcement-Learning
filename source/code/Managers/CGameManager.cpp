@@ -3,6 +3,7 @@
 #include "Games/Snake/CGameSnake.h"
 
 #include <SFML/Window/Event.hpp>
+#include <imgui-SFML.h>
 
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
@@ -19,6 +20,8 @@ CGameManager::~CGameManager( void )
 void CGameManager::Run( void )
 {
 	CTimer Timer;
+	sf::Clock Clock;
+	ImGui::SFML::Init( m_Window );
 
 	while( m_Window.isOpen() )
 	{
@@ -26,16 +29,24 @@ void CGameManager::Run( void )
 
 		while( m_Window.pollEvent( WindowEvent ) )
 		{
+			ImGui::SFML::ProcessEvent( WindowEvent );
+
 			if( WindowEvent.type == sf::Event::Closed || sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
 				m_Window.close();
 		}
 
 		Update( Timer.GetDeltaTime() );
 
+		ImGui::SFML::Update( m_Window, Clock.restart() );
+		ImGui();
+
 		m_Window.clear( sf::Color::Black );
 		Render();
+		ImGui::SFML::Render();
 		m_Window.display();
 	}
+
+	ImGui::SFML::Shutdown();
 }
 
 void CGameManager::Update( float DeltaTime )
@@ -48,4 +59,8 @@ void CGameManager::Render( void )
 {
 	if( m_pGame )
 		m_pGame->Render();
+}
+
+void CGameManager::ImGui( void )
+{
 }

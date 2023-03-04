@@ -1,8 +1,10 @@
 #include "CGameManager.h"
+#include "CTimer.h"
 #include "Games/IGame.h"
 #include "Games/Snake/CGameSnake.h"
 
 #include <SFML/Window/Event.hpp>
+#include <SFML/System/Time.hpp>
 #include <imgui-SFML.h>
 
 CGameManager::CGameManager( void )
@@ -20,7 +22,6 @@ CGameManager::~CGameManager( void )
 void CGameManager::Run( void )
 {
 	CTimer Timer;
-	sf::Clock Clock;
 	ImGui::SFML::Init( m_Window );
 
 	while( m_Window.isOpen() )
@@ -37,12 +38,9 @@ void CGameManager::Run( void )
 
 		Update( Timer.GetDeltaTime() );
 
-		ImGui::SFML::Update( m_Window, Clock.restart() );
-		ImGui();
-
 		m_Window.clear( sf::Color::Black );
 		Render();
-		ImGui::SFML::Render();
+		ImGui( Timer.GetDeltaTime( false ) );
 		m_Window.display();
 	}
 
@@ -53,6 +51,8 @@ void CGameManager::Update( float DeltaTime )
 {
 	if( m_pGame )
 		m_pGame->Update( DeltaTime );
+
+
 }
 
 void CGameManager::Render( void )
@@ -61,6 +61,17 @@ void CGameManager::Render( void )
 		m_pGame->Render();
 }
 
-void CGameManager::ImGui( void )
+void CGameManager::ImGui( float DeltaTime )
 {
+#if defined( FINAL )
+	return;
+#endif
+
+	sf::Time Time( sf::seconds( DeltaTime ) );
+	ImGui::SFML::Update( m_Window, Time );
+
+	if( m_pGame )
+		m_pGame->ImGui();
+
+	ImGui::SFML::Render();
 }

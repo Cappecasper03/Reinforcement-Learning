@@ -6,7 +6,7 @@
 
 CGameSnake::CGameSnake( void )
 	: m_FixedUpdateTimer()
-	, m_FixedUpdateTarget( 1 )
+	, m_FixedUpdateTarget( .5f )
 	, m_Grid( 10 )
 	, m_Snake()
 	, m_Food()

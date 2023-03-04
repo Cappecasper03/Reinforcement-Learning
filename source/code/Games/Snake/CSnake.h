@@ -16,6 +16,8 @@ public:
 	void Render( void );
 	void ImGui( void );
 
+	bool IsOnSnake( sf::Vector2f& rPoint );
+
 private:
 	struct SBody
 	{
@@ -31,7 +33,7 @@ private:
 	float m_BodyHalfWidth;
 	SBody m_Head;
 	sf::VertexArray m_VerticesHead;
-	SBody m_Body;
+	CVector<SBody> m_Bodies;
 	sf::VertexArray m_VerticesBody;
 
 	CGameSnake& m_rGame;

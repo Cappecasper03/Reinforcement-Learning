@@ -8,7 +8,7 @@ CSnake::CSnake( void )
 	, m_BodyHalfWidth( 0 )
 	, m_Head()
 	, m_VerticesHead( sf::TriangleFan, 20 )
-	, m_Body()
+	, m_Bodies()
 	, m_VerticesBody( sf::TriangleStrip )
 	, m_rGame( CGameSnake::GetInstance() )
 {
@@ -22,12 +22,12 @@ CSnake::CSnake( void )
 
 	UpdateHeadVertices();
 
-	m_Body = m_Head;
+	m_Bodies.push_back( m_Head );
 	float Offset = rGrid.GetTileSize() / 2;
 	sf::Vertex Vertex;
 	Vertex.color = sf::Color::Green;
 	sf::Vector2f& rPosition = Vertex.position;
-	sf::Vector2f NewPosition = rGrid.GridToScreen( m_Body.GridPosition.x, m_Body.GridPosition.y );
+	sf::Vector2f NewPosition = rGrid.GridToScreen( m_Bodies[0].GridPosition.x, m_Bodies[0].GridPosition.y );
 	rPosition.x = NewPosition.x + m_BodyHalfWidth;
 	rPosition.y = NewPosition.y;
 	m_VerticesBody.append( Vertex );
@@ -61,7 +61,10 @@ CSnake::~CSnake( void )
 
 void CSnake::Update( void )
 {
-	m_Body = m_Head;
+	for( unsigned i = m_Bodies.size() - 1; i > 0; i-- )
+		m_Bodies[i] = m_Bodies[i - 1];
+
+	m_Bodies[0] = m_Head;
 	m_Head.GridPosition += m_Head.Direction;
 
 	UpdateHeadVertices();
@@ -77,6 +80,20 @@ void CSnake::Render( void )
 
 void CSnake::ImGui( void )
 {
+}
+
+bool CSnake::IsOnSnake( sf::Vector2f& rPoint )
+{
+	if( m_Head.GridPosition == rPoint )
+		return true;
+
+	for( SBody& rBody : m_Bodies )
+	{
+		if( rBody.GridPosition == rPoint )
+			return true;
+	}
+
+	return false;
 }
 
 void CSnake::UpdateHeadVertices( void )
@@ -120,7 +137,7 @@ void CSnake::UpdateBodyVertices( void )
 		sf::Vector2f& rPosition1 = m_VerticesBody[1].position;
 		rPosition1 = m_VerticesHead[0].position;
 
-		if( m_Body.Direction.x == 0 )
+		if( m_Bodies[0].Direction.x == 0 )
 		{
 			rPosition0.x += m_BodyHalfWidth;
 			rPosition1.x -= m_BodyHalfWidth;
@@ -137,13 +154,13 @@ void CSnake::UpdateBodyVertices( void )
 		CGrid& rGrid = m_rGame.GetGrid();
 
 		sf::Vector2f& rPosition0 = m_VerticesBody[2].position;
-		rPosition0 = rGrid.GridToScreen( m_Body.GridPosition.x, m_Body.GridPosition.y );
+		rPosition0 = rGrid.GridToScreen( m_Bodies[0].GridPosition.x, m_Bodies[0].GridPosition.y );
 
 		sf::Vector2f& rPosition1 = m_VerticesBody[3].position;
 		rPosition1 = rPosition0;
 
 		float Offset = rGrid.GetTileSize() / 2;
-		if( m_Body.Direction.x == 0 )
+		if( m_Bodies[0].Direction.x == 0 )
 		{
 			rPosition0.x += m_BodyHalfWidth;
 			rPosition0.y += Offset;
@@ -168,4 +185,5 @@ void CSnake::AddBody( void )
 
 	m_VerticesBody.append( std::move( Vertex1 ) );
 	m_VerticesBody.append( std::move( Vertex2 ) );
+	m_Bodies.push_back( m_Bodies.back() );
 }

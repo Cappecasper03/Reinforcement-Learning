@@ -12,6 +12,8 @@ public:
 
 	void Render( void ) { CGameManager::GetInstance().GetWindow().draw( m_Vertices ); }
 
+	void CreateGrid( int GridSize );
+
 	const int& GetGridSize( void ) { return m_GridSize; }
 	const float& GetTileSize( void ) { return m_TileSize; }
 

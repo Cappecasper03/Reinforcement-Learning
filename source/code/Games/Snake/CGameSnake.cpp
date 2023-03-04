@@ -1,5 +1,7 @@
 #include "CGameSnake.h"
 
+#include <imgui.h>
+
 CGameSnake::CGameSnake( void )
 	: m_FixedUpdateTimer()
 	, m_FixedUpdateTarget( 1 )
@@ -27,4 +29,14 @@ void CGameSnake::Render( void )
 	m_Grid.Render();
 	m_Food.Render();
 	m_Snake.Render();
+}
+
+void CGameSnake::ImGui( void )
+{
+	if( ImGui::Begin( "Game" ) )
+	{
+		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget );
+	}
+
+	ImGui::End();
 }

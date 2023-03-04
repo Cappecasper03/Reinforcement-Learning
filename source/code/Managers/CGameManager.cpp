@@ -51,8 +51,6 @@ void CGameManager::Update( float DeltaTime )
 {
 	if( m_pGame )
 		m_pGame->Update( DeltaTime );
-
-
 }
 
 void CGameManager::Render( void )
@@ -73,5 +71,5 @@ void CGameManager::ImGui( float DeltaTime )
 	if( m_pGame )
 		m_pGame->ImGui();
 
-	ImGui::SFML::Render();
+	ImGui::SFML::Render( m_Window );
 }

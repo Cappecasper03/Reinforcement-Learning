@@ -6,6 +6,15 @@ CGrid::CGrid( int GridSize )
 	, m_TileSize( 0 )
 	, m_GridMinMax()
 {
+	CreateGrid( GridSize );
+}
+
+CGrid::~CGrid( void )
+{
+}
+
+void CGrid::CreateGrid( int GridSize )
+{
 	if( GridSize % 2 == 1 )
 		GridSize++;
 
@@ -19,6 +28,7 @@ CGrid::CGrid( int GridSize )
 
 	m_TileSize = ( float )rWindowSize.y / m_GridSize;
 
+	m_Vertices.clear();
 	m_Vertices.resize( ( m_GridSize + 1 ) * 4 );
 	for( unsigned int i = 0; i <= GridSize; i++ )
 	{
@@ -39,10 +49,6 @@ CGrid::CGrid( int GridSize )
 		Position.y = m_TileSize * i - ( i == GridSize ? 1 : 0 );
 		m_Vertices.append( sf::Vertex( Position ) );
 	}
-}
-
-CGrid::~CGrid( void )
-{
 }
 
 sf::Vector2f CGrid::GridToScreen( int X, int Y )

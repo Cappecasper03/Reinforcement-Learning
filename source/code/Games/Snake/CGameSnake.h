@@ -15,6 +15,7 @@ public:
 
 	void Update( float DeltaTime ) override;
 	void Render( void ) override;
+	void ImGui( void ) override;
 
 	CGrid& GetGrid( void ) { return m_Grid; }
 	CSnake& GetSnake( void ) { return m_Snake; }

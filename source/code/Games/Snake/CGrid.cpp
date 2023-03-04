@@ -13,6 +13,10 @@ CGrid::~CGrid( void )
 {
 }
 
+void CGrid::ImGui( void )
+{
+}
+
 void CGrid::CreateGrid( int GridSize )
 {
 	if( GridSize % 2 == 1 )

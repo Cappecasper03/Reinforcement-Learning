@@ -33,10 +33,36 @@ void CGameSnake::Render( void )
 
 void CGameSnake::ImGui( void )
 {
-	if( ImGui::Begin( "Game" ) )
+	if( !ImGui::BeginTabBar( "GameBar" ) )
+		return;
+
+	if( ImGui::BeginTabItem( "Game" ) )
 	{
 		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget );
+
+		ImGui::EndTabItem();
 	}
 
-	ImGui::End();
+	if( ImGui::BeginTabItem( "Snake" ) )
+	{
+		m_Snake.ImGui();
+
+		ImGui::EndTabItem();
+	}
+
+	if( ImGui::BeginTabItem( "Grid" ) )
+	{
+		m_Grid.ImGui();
+
+		ImGui::EndTabItem();
+	}
+
+	if( ImGui::BeginTabItem( "Food" ) )
+	{
+		m_Food.ImGui();
+
+		ImGui::EndTabItem();
+	}
+
+	ImGui::EndTabBar();
 }

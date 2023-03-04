@@ -13,6 +13,7 @@ public:
 	~CFood( void );
 
 	void Render( void ) { CGameManager::GetInstance().GetWindow().draw( m_Vertices ); }
+	void ImGui( void );
 
 	void RandomizePosition( void );
 

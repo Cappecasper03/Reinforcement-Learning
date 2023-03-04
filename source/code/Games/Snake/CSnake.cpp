@@ -17,10 +17,15 @@ CSnake::CSnake( void )
 	m_BodyHalfWidth = rGrid.GetTileSize() * .3f;
 	m_Head.GridPosition = sf::Vector2f( ( int )( rGrid.GetGridSize() / 2 ), ( int )( rGrid.GetGridSize() / 2 ) );
 	m_Head.Direction = sf::Vector2f( 0, 1 );
+	for( unsigned i = 0; i < m_VerticesHead.getVertexCount(); i++ )
+		m_VerticesHead[i].color = sf::Color::Green;
+
 	UpdateHeadVertices();
 
 	m_Body = m_Head;
+	float Offset = rGrid.GetTileSize() / 2;
 	sf::Vertex Vertex;
+	Vertex.color = sf::Color::Green;
 	sf::Vector2f& rPosition = Vertex.position;
 	sf::Vector2f NewPosition = rGrid.GridToScreen( m_Body.GridPosition.x, m_Body.GridPosition.y );
 	rPosition.x = NewPosition.x + m_BodyHalfWidth;
@@ -32,19 +37,19 @@ CSnake::CSnake( void )
 	m_VerticesBody.append( Vertex );
 
 	rPosition.x = NewPosition.x + m_BodyHalfWidth;
-	rPosition.y = NewPosition.y + rGrid.GetTileSize() / 2;
+	rPosition.y = NewPosition.y + Offset;
 	m_VerticesBody.append( Vertex );
 
 	rPosition.x = NewPosition.x - m_BodyHalfWidth;
-	rPosition.y = NewPosition.y + rGrid.GetTileSize() / 2;
+	rPosition.y = NewPosition.y + Offset;
 	m_VerticesBody.append( Vertex );
 
 	rPosition.x = NewPosition.x + m_BodyHalfWidth;
-	rPosition.y = NewPosition.y - rGrid.GetTileSize() / 2;
+	rPosition.y = NewPosition.y - Offset;
 	m_VerticesBody.append( Vertex );
 
 	rPosition.x = NewPosition.x - m_BodyHalfWidth;
-	rPosition.y = NewPosition.y - rGrid.GetTileSize() / 2;
+	rPosition.y = NewPosition.y - Offset;
 	m_VerticesBody.append( Vertex );
 
 	Update();
@@ -59,8 +64,8 @@ void CSnake::Update( void )
 	m_Body = m_Head;
 	m_Head.GridPosition += m_Head.Direction;
 
-	UpdateBodyVertices();
 	UpdateHeadVertices();
+	UpdateBodyVertices();
 }
 
 void CSnake::Render( void )
@@ -68,6 +73,10 @@ void CSnake::Render( void )
 	sf::RenderWindow& rWindow = CGameManager::GetInstance().GetWindow();
 	rWindow.draw( m_VerticesBody );
 	rWindow.draw( m_VerticesHead );
+}
+
+void CSnake::ImGui( void )
+{
 }
 
 void CSnake::UpdateHeadVertices( void )
@@ -99,9 +108,56 @@ void CSnake::UpdateHeadVertices( void )
 
 void CSnake::UpdateBodyVertices( void )
 {
-	// 6 first vertices is the first body
-	// 2 first is in head to connect head and body
-	// next 4 is fills first body tile 
+	// Updates all vertice except the 4 first
+	for( unsigned i = m_VerticesBody.getVertexCount() - 1; i > 3; i-- )
+		m_VerticesBody[i] = m_VerticesBody[i - 2];
+
+	// Updates first 2 vertices
+	{
+		sf::Vector2f& rPosition0 = m_VerticesBody[0].position;
+		rPosition0 = m_VerticesHead[0].position;
+
+		sf::Vector2f& rPosition1 = m_VerticesBody[1].position;
+		rPosition1 = m_VerticesHead[0].position;
+
+		if( m_Body.Direction.x == 0 )
+		{
+			rPosition0.x += m_BodyHalfWidth;
+			rPosition1.x -= m_BodyHalfWidth;
+		}
+		else
+		{
+			rPosition0.y += m_BodyHalfWidth;
+			rPosition1.y -= m_BodyHalfWidth;
+		}
+	}
+
+	// Updates vertices 3 & 4
+	{
+		CGrid& rGrid = m_rGame.GetGrid();
+
+		sf::Vector2f& rPosition0 = m_VerticesBody[2].position;
+		rPosition0 = rGrid.GridToScreen( m_Body.GridPosition.x, m_Body.GridPosition.y );
+
+		sf::Vector2f& rPosition1 = m_VerticesBody[3].position;
+		rPosition1 = rPosition0;
+
+		float Offset = rGrid.GetTileSize() / 2;
+		if( m_Body.Direction.x == 0 )
+		{
+			rPosition0.x += m_BodyHalfWidth;
+			rPosition0.y += Offset;
+			rPosition1.x -= m_BodyHalfWidth;
+			rPosition1.y += Offset;
+		}
+		else
+		{
+			rPosition0.x += Offset;
+			rPosition0.y += m_BodyHalfWidth;
+			rPosition1.x += Offset;
+			rPosition1.y -= m_BodyHalfWidth;
+		}
+	}
 }
 
 void CSnake::AddBody( void )

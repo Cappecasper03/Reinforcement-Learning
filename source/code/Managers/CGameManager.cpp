@@ -6,6 +6,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Time.hpp>
 #include <imgui-SFML.h>
+#include <imgui.h>
 
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
@@ -68,8 +69,12 @@ void CGameManager::ImGui( float DeltaTime )
 	sf::Time Time( sf::seconds( DeltaTime ) );
 	ImGui::SFML::Update( m_Window, Time );
 
-	if( m_pGame )
-		m_pGame->ImGui();
+	if( ImGui::Begin( "Game" ) )
+	{
+		if( m_pGame )
+			m_pGame->ImGui();
+	}
 
+	ImGui::End();
 	ImGui::SFML::Render( m_Window );
 }

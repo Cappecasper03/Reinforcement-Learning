@@ -20,6 +20,10 @@ CFood::~CFood( void )
 {
 }
 
+void CFood::ImGui( void )
+{
+}
+
 void CFood::RandomizePosition( void )
 {
 	sf::Vector2f NewPosition( -1, -1 );

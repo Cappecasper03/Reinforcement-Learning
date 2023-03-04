@@ -14,6 +14,7 @@ public:
 
 	void Update( void );
 	void Render( void );
+	void ImGui( void );
 
 private:
 	struct SBody

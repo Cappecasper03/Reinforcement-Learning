@@ -15,8 +15,13 @@ public:
 	void Update( void );
 	void Render( void );
 	void ImGui( void );
+	void Input( void );
 
-	bool IsOnSnake( sf::Vector2f& rPoint );
+	bool IsDead( const sf::Vector2f& rGridPoint );
+	void AddBody( void );
+
+	unsigned GetStepsTaken( void ) { return m_StepsTaken; }
+	unsigned GetScore( void ) { return m_Bodies.size() - 1; }
 
 private:
 	struct SBody
@@ -27,14 +32,15 @@ private:
 
 	void UpdateHeadVertices( void );
 	void UpdateBodyVertices( void );
-	void AddBody( void );
 
 	float m_HeadRadius;
-	float m_BodyHalfWidth;
 	SBody m_Head;
 	sf::VertexArray m_VerticesHead;
 	CVector<SBody> m_Bodies;
 	sf::VertexArray m_VerticesBody;
+
+	unsigned m_StepsTaken;
+	bool m_IsDead;
 
 	CGameSnake& m_rGame;
 };

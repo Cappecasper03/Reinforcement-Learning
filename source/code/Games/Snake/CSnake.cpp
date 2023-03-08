@@ -5,52 +5,25 @@
 
 CSnake::CSnake( void )
 	: m_HeadRadius( 0 )
-	, m_BodyHalfWidth( 0 )
 	, m_Head()
 	, m_VerticesHead( sf::TriangleFan, 20 )
 	, m_Bodies()
-	, m_VerticesBody( sf::TriangleStrip )
+	, m_VerticesBody( sf::Triangles )
+	, m_StepsTaken( 0 )
+	, m_IsDead( false )
 	, m_rGame( CGameSnake::GetInstance() )
 {
 	CGrid& rGrid = m_rGame.GetGrid();
 	m_HeadRadius = rGrid.GetTileSize() * .4f;
-	m_BodyHalfWidth = rGrid.GetTileSize() * .3f;
 	m_Head.GridPosition = sf::Vector2f( ( int )( rGrid.GetGridSize() / 2 ), ( int )( rGrid.GetGridSize() / 2 ) );
 	m_Head.Direction = sf::Vector2f( 0, 1 );
 	for( unsigned i = 0; i < m_VerticesHead.getVertexCount(); i++ )
 		m_VerticesHead[i].color = sf::Color::Green;
 
 	UpdateHeadVertices();
-
 	m_Bodies.push_back( m_Head );
-	float Offset = rGrid.GetTileSize() / 2;
-	sf::Vertex Vertex;
-	Vertex.color = sf::Color::Green;
-	sf::Vector2f& rPosition = Vertex.position;
-	sf::Vector2f NewPosition = rGrid.GridToScreen( m_Bodies[0].GridPosition.x, m_Bodies[0].GridPosition.y );
-	rPosition.x = NewPosition.x + m_BodyHalfWidth;
-	rPosition.y = NewPosition.y;
-	m_VerticesBody.append( Vertex );
 
-	rPosition.x = NewPosition.x - m_BodyHalfWidth;
-	rPosition.y = NewPosition.y;
-	m_VerticesBody.append( Vertex );
-
-	rPosition.x = NewPosition.x + m_BodyHalfWidth;
-	rPosition.y = NewPosition.y + Offset;
-	m_VerticesBody.append( Vertex );
-
-	rPosition.x = NewPosition.x - m_BodyHalfWidth;
-	rPosition.y = NewPosition.y + Offset;
-	m_VerticesBody.append( Vertex );
-
-	rPosition.x = NewPosition.x + m_BodyHalfWidth;
-	rPosition.y = NewPosition.y - Offset;
-	m_VerticesBody.append( Vertex );
-
-	rPosition.x = NewPosition.x - m_BodyHalfWidth;
-	rPosition.y = NewPosition.y - Offset;
-	m_VerticesBody.append( Vertex );
+	// TODO: Setup one triangle per body/tile
 
 	Update();
 }
@@ -61,6 +34,8 @@ CSnake::~CSnake( void )
 
 void CSnake::Update( void )
 {
+	m_StepsTaken++;
+
 	for( unsigned i = m_Bodies.size() - 1; i > 0; i-- )
 		m_Bodies[i] = m_Bodies[i - 1];
 
@@ -82,15 +57,38 @@ void CSnake::ImGui( void )
 {
 }
 
-bool CSnake::IsOnSnake( sf::Vector2f& rPoint )
+void CSnake::Input( void )
 {
-	if( m_Head.GridPosition == rPoint )
+	// TODO: Better input
+
+	if( sf::Keyboard::isKeyPressed( sf::Keyboard::Up ) )
+		m_Head.Direction = sf::Vector2f( 0, -1 );
+	else if( sf::Keyboard::isKeyPressed( sf::Keyboard::Down ) )
+		m_Head.Direction = sf::Vector2f( 0, 1 );
+	else if( sf::Keyboard::isKeyPressed( sf::Keyboard::Right ) )
+		m_Head.Direction = sf::Vector2f( 1, 0 );
+	else if( sf::Keyboard::isKeyPressed( sf::Keyboard::Left ) )
+		m_Head.Direction = sf::Vector2f( -1, 0 );
+}
+
+bool CSnake::IsDead( const sf::Vector2f& rGridPoint )
+{
+	if( m_IsDead )
 		return true;
+
+	if( m_Head.GridPosition == rGridPoint )
+	{
+		m_IsDead = true;
+		return true;
+	}
 
 	for( SBody& rBody : m_Bodies )
 	{
-		if( rBody.GridPosition == rPoint )
+		if( rBody.GridPosition == rGridPoint || m_Head.GridPosition == rBody.GridPosition )
+		{
+			m_IsDead = true;
 			return true;
+		}
 	}
 
 	return false;
@@ -125,56 +123,7 @@ void CSnake::UpdateHeadVertices( void )
 
 void CSnake::UpdateBodyVertices( void )
 {
-	// Updates all vertice except the 4 first
-	for( unsigned i = m_VerticesBody.getVertexCount() - 1; i > 3; i-- )
-		m_VerticesBody[i] = m_VerticesBody[i - 2];
-
-	// Updates first 2 vertices
-	{
-		sf::Vector2f& rPosition0 = m_VerticesBody[0].position;
-		rPosition0 = m_VerticesHead[0].position;
-
-		sf::Vector2f& rPosition1 = m_VerticesBody[1].position;
-		rPosition1 = m_VerticesHead[0].position;
-
-		if( m_Bodies[0].Direction.x == 0 )
-		{
-			rPosition0.x += m_BodyHalfWidth;
-			rPosition1.x -= m_BodyHalfWidth;
-		}
-		else
-		{
-			rPosition0.y += m_BodyHalfWidth;
-			rPosition1.y -= m_BodyHalfWidth;
-		}
-	}
-
-	// Updates vertices 3 & 4
-	{
-		CGrid& rGrid = m_rGame.GetGrid();
-
-		sf::Vector2f& rPosition0 = m_VerticesBody[2].position;
-		rPosition0 = rGrid.GridToScreen( m_Bodies[0].GridPosition.x, m_Bodies[0].GridPosition.y );
-
-		sf::Vector2f& rPosition1 = m_VerticesBody[3].position;
-		rPosition1 = rPosition0;
-
-		float Offset = rGrid.GetTileSize() / 2;
-		if( m_Bodies[0].Direction.x == 0 )
-		{
-			rPosition0.x += m_BodyHalfWidth;
-			rPosition0.y += Offset;
-			rPosition1.x -= m_BodyHalfWidth;
-			rPosition1.y += Offset;
-		}
-		else
-		{
-			rPosition0.x += Offset;
-			rPosition0.y += m_BodyHalfWidth;
-			rPosition1.x += Offset;
-			rPosition1.y -= m_BodyHalfWidth;
-		}
-	}
+	// TODO: Update one triangle per body/tile
 }
 
 void CSnake::AddBody( void )

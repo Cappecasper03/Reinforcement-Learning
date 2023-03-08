@@ -31,11 +31,18 @@ void CGameSnake::Update( float DeltaTime )
 	FPS /= m_FPSBuffer.size();
 	m_FPS.setString( "FPS: " + std::to_string( FPS ) );
 
-	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
+	m_Snake.Input();
+	if( m_Snake.IsDead() || m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
 		return;
 
 	m_FixedUpdateTimer.Update();
 	m_Snake.Update();
+
+	if( m_Snake.IsDead( m_Food.GetGridPos() ) )
+	{
+		m_Snake.AddBody();
+		m_Food.RandomizePosition();
+	}
 }
 
 void CGameSnake::Render( void )
@@ -54,7 +61,7 @@ void CGameSnake::ImGui( void )
 
 	if( ImGui::BeginTabItem( "Game" ) )
 	{
-		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget );
+		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget, .01f, .1f );
 
 		ImGui::EndTabItem();
 	}

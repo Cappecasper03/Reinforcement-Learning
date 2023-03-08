@@ -42,6 +42,12 @@ void CSnake::Update( void )
 	m_Bodies[0] = m_Head;
 	m_Head.GridPosition += m_Head.Direction;
 
+	if( m_rGame.GetFood().GetGridPos() == m_Head.GridPosition )
+	{
+		AddBody();
+		m_rGame.GetFood().RandomizePosition();
+	}
+
 	UpdateHeadVertices();
 	UpdateBodyVertices();
 }
@@ -71,20 +77,28 @@ void CSnake::Input( void )
 		m_Head.Direction = sf::Vector2f( -1, 0 );
 }
 
-bool CSnake::IsDead( const sf::Vector2f& rGridPoint )
+bool CSnake::IsOnSnake( sf::Vector2f& rGridPoint )
+{
+	if( m_Head.GridPosition == rGridPoint )
+		return true;
+
+	for( SBody& rBody : m_Bodies )
+	{
+		if( rBody.GridPosition == rGridPoint )
+			return true;
+	}
+
+	return false;
+}
+
+bool CSnake::IsDead( void )
 {
 	if( m_IsDead )
 		return true;
 
-	if( m_Head.GridPosition == rGridPoint )
-	{
-		m_IsDead = true;
-		return true;
-	}
-
 	for( SBody& rBody : m_Bodies )
 	{
-		if( rBody.GridPosition == rGridPoint || m_Head.GridPosition == rBody.GridPosition )
+		if( m_Head.GridPosition == rBody.GridPosition )
 		{
 			m_IsDead = true;
 			return true;
@@ -128,11 +142,7 @@ void CSnake::UpdateBodyVertices( void )
 
 void CSnake::AddBody( void )
 {
-	unsigned VertexCount = m_VerticesBody.getVertexCount();
-	sf::Vertex Vertex1 = m_VerticesBody[VertexCount - 2];
-	sf::Vertex Vertex2 = m_VerticesBody[VertexCount - 1];
+	// TODO: Add Vertices
 
-	m_VerticesBody.append( std::move( Vertex1 ) );
-	m_VerticesBody.append( std::move( Vertex2 ) );
 	m_Bodies.push_back( m_Bodies.back() );
 }

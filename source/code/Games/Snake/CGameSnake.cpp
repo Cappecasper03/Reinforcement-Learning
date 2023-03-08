@@ -37,12 +37,6 @@ void CGameSnake::Update( float DeltaTime )
 
 	m_FixedUpdateTimer.Update();
 	m_Snake.Update();
-
-	if( m_Snake.IsDead( m_Food.GetGridPos() ) )
-	{
-		m_Snake.AddBody();
-		m_Food.RandomizePosition();
-	}
 }
 
 void CGameSnake::Render( void )

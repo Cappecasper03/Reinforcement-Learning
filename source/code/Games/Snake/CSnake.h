@@ -17,7 +17,8 @@ public:
 	void ImGui( void );
 	void Input( void );
 
-	bool IsDead( const sf::Vector2f& rGridPoint );
+	bool IsOnSnake( sf::Vector2f& rGridPoint );
+	bool IsDead( void );
 	void AddBody( void );
 
 	unsigned GetStepsTaken( void ) { return m_StepsTaken; }

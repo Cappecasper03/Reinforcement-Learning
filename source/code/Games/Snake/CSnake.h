@@ -32,11 +32,14 @@ private:
 	};
 
 	void UpdateHeadVertices( void );
-	void UpdateBodyVertices( void );
+	void UpdateBodyVertices( unsigned BodyIndex );
 
 	float m_HeadRadius;
 	SBody m_Head;
 	sf::VertexArray m_VerticesHead;
+	sf::Vector2f m_MoveDirection;
+
+	float m_HalfBodySize;
 	CVector<SBody> m_Bodies;
 	sf::VertexArray m_VerticesBody;
 

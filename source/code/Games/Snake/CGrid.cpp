@@ -1,6 +1,6 @@
 #include "CGrid.h"
 
-CGrid::CGrid( int GridSize )
+CGrid::CGrid( unsigned GridSize )
 	: m_Vertices( sf::Lines, 0 )
 	, m_GridSize( GridSize )
 	, m_TileSize( 0 )
@@ -17,7 +17,7 @@ void CGrid::ImGui( void )
 {
 }
 
-void CGrid::CreateGrid( int GridSize )
+void CGrid::CreateGrid( unsigned GridSize )
 {
 	if( GridSize % 2 == 1 )
 		GridSize++;
@@ -34,7 +34,7 @@ void CGrid::CreateGrid( int GridSize )
 
 	m_Vertices.clear();
 	m_Vertices.resize( ( m_GridSize + 1 ) * 4 );
-	for( unsigned int i = 0; i <= GridSize; i++ )
+	for( unsigned i = 0; i <= GridSize; i++ )
 	{
 		sf::Vector2f Position;
 		Position.x = StartX + m_TileSize * i;

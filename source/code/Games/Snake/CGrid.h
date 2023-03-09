@@ -7,17 +7,18 @@
 class CGrid
 {
 public:
-	CGrid( int GridSize );
+	CGrid( unsigned GridSize );
 	~CGrid( void );
 
 	void Render( void ) { CGameManager::GetInstance().GetWindow().draw( m_Vertices ); }
 	void ImGui( void );
 
-	void CreateGrid( int GridSize );
+	void CreateGrid( unsigned GridSize );
 
-	const int& GetGridSize( void ) { return m_GridSize; }
+	const unsigned& GetGridSize( void ) { return m_GridSize; }
 	const float& GetTileSize( void ) { return m_TileSize; }
 
+	sf::Vector2f GridToScreen( sf::Vector2f& rVector ) { return GridToScreen( rVector.x, rVector.y ); }
 	sf::Vector2f GridToScreen( int X, int Y );
 
 private:
@@ -30,7 +31,7 @@ private:
 	};
 
 	sf::VertexArray m_Vertices;
-	int m_GridSize;
+	unsigned m_GridSize;
 	float m_TileSize;
 
 	SGridMinMax m_GridMinMax;

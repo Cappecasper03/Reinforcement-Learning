@@ -39,7 +39,7 @@ void CFood::RandomizePosition( void )
 
 	m_GridPos = NewPosition;
 	int VertexCount = m_Vertices.getVertexCount();
-	rPosition = rGrid.GridToScreen( NewPosition.x, NewPosition.y );
+	rPosition = rGrid.GridToScreen( NewPosition );
 
 	float AnglePerVertex = ( float )360 / ( VertexCount - 2 );
 	AnglePerVertex *= std::acos( -1 ) / 180;

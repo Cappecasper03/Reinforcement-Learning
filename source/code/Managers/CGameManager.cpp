@@ -6,7 +6,6 @@
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Time.hpp>
-#include <imgui-SFML.h>
 #include <imgui.h>
 
 CGameManager::CGameManager( void )

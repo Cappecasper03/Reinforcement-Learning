@@ -10,11 +10,12 @@ CGameSnake::CGameSnake( void )
 	, m_Grid( 10 )
 	, m_Snake()
 	, m_Food()
-	, m_FPS( "", *CFontManager::GetInstance().GetFont( "ForeverBatman" ) )
+	, m_Text( "", *CFontManager::GetInstance().GetFont( "ForeverBatman" ) )
 	, m_FPSBuffer( 500 )
 	, m_FPSIndex( 0 )
 {
-	m_FPS.move( sf::Vector2f( 10, 0 ) );
+	m_Text.move( sf::Vector2f( 10, 0 ) );
+	m_Text.scale( .6f, .6f );
 }
 
 CGameSnake::~CGameSnake( void )
@@ -29,11 +30,15 @@ void CGameSnake::Update( float DeltaTime )
 	for( unsigned& rUnsigned : m_FPSBuffer )
 		FPS += rUnsigned;
 	FPS /= m_FPSBuffer.size();
-	m_FPS.setString( "FPS: " + std::to_string( FPS ) );
+	m_Text.setString( "FPS: " + std::to_string( FPS ) );
 
-	m_Snake.Input();
-	if( m_Snake.IsDead() || m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
+	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
 		return;
+	else if( m_Snake.IsDead() )
+	{
+		m_IsRestartable = true;
+		return;
+	}
 
 	m_FixedUpdateTimer.Update();
 	m_Snake.Update();
@@ -45,7 +50,9 @@ void CGameSnake::Render( void )
 	m_Food.Render();
 	m_Snake.Render();
 
-	CGameManager::GetInstance().GetWindow().draw( m_FPS );
+	m_Text.setString( m_Text.getString() + "\n\n" + "Score: " + std::to_string( m_Snake.GetScore() ) );
+	m_Text.setString( m_Text.getString() + "\n" + "Steps Taken: " + std::to_string( m_Snake.GetStepsTaken() ) );
+	CGameManager::GetInstance().GetWindow().draw( m_Text );
 }
 
 void CGameSnake::ImGui( void )
@@ -56,6 +63,9 @@ void CGameSnake::ImGui( void )
 	if( ImGui::BeginTabItem( "Game" ) )
 	{
 		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget, .01f, .1f );
+
+		if( ImGui::Button( "Restart" ) && m_IsRestartable )
+			Restart();
 
 		ImGui::EndTabItem();
 	}
@@ -82,4 +92,19 @@ void CGameSnake::ImGui( void )
 	}
 
 	ImGui::EndTabBar();
+}
+
+void CGameSnake::Input( void )
+{
+	m_Snake.Input();
+
+	if( m_IsRestartable && sf::Keyboard::isKeyPressed( sf::Keyboard::R ) )
+		Restart();
+}
+
+void CGameSnake::Restart( void )
+{
+	m_IsRestartable = false;
+	m_Snake.Restart();
+	m_Food.RandomizePosition();
 }

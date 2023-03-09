@@ -1,4 +1,7 @@
 #include "CGrid.h"
+#include "CGameSnake.h"
+
+#include <imgui.h>
 
 CGrid::CGrid( unsigned GridSize )
 	: m_Vertices( sf::Lines, 0 )
@@ -15,6 +18,11 @@ CGrid::~CGrid( void )
 
 void CGrid::ImGui( void )
 {
+	if( !CGameSnake::GetInstance().IsRestartable() )
+		return;
+
+	if( ImGui::InputInt( "Grid Size", ( int* )&m_GridSize, 2 ) )
+		CreateGrid( m_GridSize );
 }
 
 void CGrid::CreateGrid( unsigned GridSize )
@@ -22,6 +30,7 @@ void CGrid::CreateGrid( unsigned GridSize )
 	if( GridSize % 2 == 1 )
 		GridSize++;
 
+	m_GridSize = GridSize;
 	const sf::Vector2u& rWindowSize = CGameManager::GetInstance().GetWindow().getSize();
 	int StartX = rWindowSize.x - rWindowSize.y;
 

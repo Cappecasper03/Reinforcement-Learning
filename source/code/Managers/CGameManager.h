@@ -17,6 +17,7 @@ public:
 	void Update( float DeltaTime );
 	void Render( void );
 	void ImGui( float DeltaTime );
+	void Input( void );
 
 	sf::RenderWindow& GetWindow( void ) { return m_Window; }
 

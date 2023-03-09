@@ -17,24 +17,10 @@ CSnake::CSnake( void )
 	, m_IsDead( false )
 	, m_rGame( CGameSnake::GetInstance() )
 {
-	CGrid& rGrid = m_rGame.GetGrid();
-	m_HeadRadius = rGrid.GetTileSize() * .4f;
-	m_Head.GridPosition = sf::Vector2f( ( unsigned )( rGrid.GetGridSize() / 2 ), ( unsigned )( rGrid.GetGridSize() / 2 ) );
-	m_Head.Direction = sf::Vector2f( 0, 1 );
 	for( unsigned i = 0; i < m_VerticesHead.getVertexCount(); i++ )
 		m_VerticesHead[i].color = sf::Color::Green;
 
-	UpdateHeadVertices();
-
-	m_HalfBodySize = rGrid.GetTileSize() * .3f;
-	m_Bodies.push_back( m_Head );
-	sf::Vertex Vertex;
-	Vertex.color = sf::Color::Green;
-	for( unsigned i = 0; i < 3; i++ )
-		m_VerticesBody.append( Vertex );
-	UpdateBodyVertices( 0 );
-
-	Update();
+	Restart();
 }
 
 CSnake::~CSnake( void )
@@ -192,4 +178,28 @@ void CSnake::AddBody( void )
 	for( unsigned i = 0; i < 3; i++ )
 		m_VerticesBody.append( m_VerticesBody[0] );
 	UpdateBodyVertices( m_Bodies.size() - 1 );
+}
+
+void CSnake::Restart( void )
+{
+	m_IsDead = false;
+	m_Bodies.clear();
+	m_VerticesBody.clear();
+
+	CGrid& rGrid = m_rGame.GetGrid();
+	m_HeadRadius = rGrid.GetTileSize() * .4f;
+	m_Head.GridPosition = sf::Vector2f( ( float )( rGrid.GetGridSize() / 2 ), ( float )( rGrid.GetGridSize() / 2 ) );
+	m_Head.Direction = sf::Vector2f( 0, 1 );
+
+	UpdateHeadVertices();
+
+	m_HalfBodySize = rGrid.GetTileSize() * .3f;
+	m_Bodies.push_back( m_Head );
+	sf::Vertex Vertex;
+	Vertex.color = sf::Color::Green;
+	for( unsigned i = 0; i < 3; i++ )
+		m_VerticesBody.append( Vertex );
+	UpdateBodyVertices( 0 );
+
+	Update();
 }

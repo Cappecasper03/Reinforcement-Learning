@@ -24,6 +24,8 @@ public:
 	unsigned GetStepsTaken( void ) { return m_StepsTaken; }
 	unsigned GetScore( void ) { return m_Bodies.size() - 1; }
 
+	void Restart( void );
+
 private:
 	struct SBody
 	{

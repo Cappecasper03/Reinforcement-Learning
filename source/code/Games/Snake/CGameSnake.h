@@ -17,12 +17,15 @@ public:
 	void Update( float DeltaTime ) override;
 	void Render( void ) override;
 	void ImGui( void ) override;
+	void Input( void ) override;
 
 	CGrid& GetGrid( void ) { return m_Grid; }
 	CSnake& GetSnake( void ) { return m_Snake; }
 	CFood& GetFood( void ) { return m_Food; }
 
 private:
+	void Restart( void );
+
 	CTimer m_FixedUpdateTimer;
 	float m_FixedUpdateTarget;
 
@@ -30,7 +33,7 @@ private:
 	CSnake m_Snake;
 	CFood m_Food;
 
-	sf::Text m_FPS;
+	sf::Text m_Text;
 	CVector<unsigned> m_FPSBuffer;
 	unsigned m_FPSIndex;
 };

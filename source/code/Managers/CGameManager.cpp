@@ -43,6 +43,7 @@ void CGameManager::Run( void )
 				m_Window.close();
 		}
 
+		Input();
 		Update( Timer.GetDeltaTime() );
 
 		m_Window.clear( sf::Color::Black );
@@ -83,4 +84,10 @@ void CGameManager::ImGui( float DeltaTime )
 
 	ImGui::End();
 	ImGui::SFML::Render( m_Window );
+}
+
+void CGameManager::Input( void )
+{
+	if( m_pGame )
+		m_pGame->Input();
 }

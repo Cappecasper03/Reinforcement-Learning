@@ -8,8 +8,6 @@ CFood::CFood( void )
 	, m_Radius()
 	, m_rGame( CGameSnake::GetInstance() )
 {
-	m_Radius = m_rGame.GetGrid().GetTileSize() * .5f / 2;
-
 	for( unsigned i = 0; i < m_Vertices.getVertexCount(); i++ )
 		m_Vertices[i].color = sf::Color::Red;
 
@@ -27,6 +25,8 @@ void CFood::ImGui( void )
 void CFood::RandomizePosition( void )
 {
 	CGrid& rGrid = m_rGame.GetGrid();
+
+	m_Radius = m_rGame.GetGrid().GetTileSize() * .5f / 2;
 	int GridSize = rGrid.GetGridSize();
 	sf::Vector2f NewPosition( -1, -1 );
 	sf::Vector2f& rPosition = m_Vertices[0].position;

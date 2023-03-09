@@ -13,5 +13,5 @@ public:
 protected:
 	virtual void Restart( void ) {}
 
-	bool m_IsRestartable = false;
+	bool m_IsRestartable = true;
 };

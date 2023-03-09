@@ -37,16 +37,21 @@ void CSnake::Update( void )
 		UpdateBodyVertices( i );
 	}
 
+	m_Head.Direction = m_MoveDirection;
+
 	m_Bodies[0] = m_Head;
 	UpdateBodyVertices( 0 );
 
-	m_Head.Direction = m_MoveDirection;
 	m_Head.GridPosition += m_Head.Direction;
 
 	if( m_rGame.GetFood().GetGridPos() == m_Head.GridPosition )
 	{
 		AddBody();
-		m_rGame.GetFood().RandomizePosition();
+		unsigned Tiles = pow( CGameSnake::GetInstance().GetGrid().GetGridSize(), 2 );
+		if( m_Bodies.size() < Tiles )
+			m_rGame.GetFood().RandomizePosition();
+		else
+			m_IsDead = true;
 	}
 
 	UpdateHeadVertices();
@@ -188,7 +193,7 @@ void CSnake::Restart( void )
 
 	CGrid& rGrid = m_rGame.GetGrid();
 	m_HeadRadius = rGrid.GetTileSize() * .4f;
-	m_Head.GridPosition = sf::Vector2f( ( float )( rGrid.GetGridSize() / 2 ), ( float )( rGrid.GetGridSize() / 2 ) );
+	m_Head.GridPosition = sf::Vector2f( ( float )( rGrid.GetGridSize() / 2 ), ( float )( rGrid.GetGridSize() / 2 ) - 1 );
 	m_Head.Direction = sf::Vector2f( 0, 1 );
 
 	UpdateHeadVertices();

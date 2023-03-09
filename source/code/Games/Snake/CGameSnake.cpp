@@ -32,6 +32,9 @@ void CGameSnake::Update( float DeltaTime )
 	FPS /= m_FPSBuffer.size();
 	m_Text.setString( "FPS: " + std::to_string( FPS ) );
 
+	if( m_IsRestartable )
+		return;
+
 	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
 		return;
 	else if( m_Snake.IsDead() )

@@ -12,8 +12,8 @@ public:
 
 	bool IsRestartable( void ) { return m_IsRestartable; }
 
-protected:
-	virtual void Restart( void ) {}
+	virtual void Restart( void ) = 0;
 
+protected:
 	bool m_IsRestartable = true;
 };

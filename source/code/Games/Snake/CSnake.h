@@ -50,4 +50,6 @@ private:
 	bool m_IsDead;
 
 	CGameSnake* m_pCastedGame;
+
+	static const sf::Vector2f s_Directions[4];
 };

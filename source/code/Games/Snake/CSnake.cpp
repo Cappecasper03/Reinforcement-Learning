@@ -5,6 +5,8 @@
 
 #include <imgui.h>
 
+const sf::Vector2f CSnake::s_Directions[4] = { sf::Vector2f( 0, 1 ), sf::Vector2f( 0, -1 ), sf::Vector2f( 1, 0 ), sf::Vector2f( -1, 0 ) };
+
 CSnake::CSnake( IGame* pGame )
 	: IAgent( pGame )
 	, m_HeadRadius( 0 )
@@ -76,8 +78,14 @@ void CSnake::Input( const std::vector<float>* pActions )
 
 	if( pActions )
 	{
-		// TODO: Add agent action
+		unsigned BestAction = 0;
+		for( unsigned i = 0; i < pActions->size(); i++ )
+		{
+			if( pActions[i] > pActions[BestAction] )
+				BestAction = i;
+		}
 
+		m_MoveDirection = s_Directions[BestAction];
 		return;
 	}
 

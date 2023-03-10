@@ -19,7 +19,7 @@ public:
 	CNeuralNetwork( std::vector<unsigned>& rTopology );
 
 	bool Predict( const std::vector<float>& rInputs );
-	float GetPrediction( unsigned OutputIndex ) { return m_ValueMatrices.back().GetValues()[OutputIndex]; }
+	float GetPrediction( unsigned OutputIndex ) { return m_ValueMatrices.back()[OutputIndex]; }
 	const std::vector<float>& GetAllPredictions( void ) { return m_ValueMatrices.back().GetValues(); }
 
 	void SetHiddenActivation( EActivation Activation ) { m_HiddenActivation = Activation; }
@@ -27,6 +27,9 @@ public:
 
 	bool SaveModel( const std::string FileName = "NeuralNetwork.txt" );
 	bool LoadModel( const std::string FileName = "NeuralNetwork.txt" );
+
+	std::vector<CMatrix>& GetWeightMatrices( void ) { return m_WeightMatrices; }
+	std::vector<CMatrix>& GetBiasMatrices( void ) { return m_BiasMatrices; }
 
 private:
 	void Activate( float& rValue, bool IsOutput = false );

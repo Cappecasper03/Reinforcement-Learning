@@ -18,7 +18,7 @@ CNeuralNetwork::CNeuralNetwork( std::vector<unsigned>& rTopology )
 		{	// Initalize random weights
 			CMatrix WeightMatrix( m_Topology[i + 1], m_Topology[i] );
 			for( float& rValue : WeightMatrix.GetValues() )
-				rValue = Random( 0.f, 1.f );
+				rValue = Random( 0.f, 1.f ); // TODO: Maybe not hardcode random values
 
 			m_WeightMatrices.push_back( std::move( WeightMatrix ) );
 		}
@@ -26,7 +26,7 @@ CNeuralNetwork::CNeuralNetwork( std::vector<unsigned>& rTopology )
 		{	// Initalize random biases
 			CMatrix BiasMatrix( m_Topology[i + 1], 1 );
 			for( float& rValue : BiasMatrix.GetValues() )
-				rValue = Random( 0.f, 1.f );
+				rValue = Random( 0.f, 1.f ); // TODO: Maybe not hardcode random values
 
 			m_BiasMatrices.push_back( std::move( BiasMatrix ) );
 		}

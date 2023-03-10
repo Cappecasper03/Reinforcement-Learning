@@ -38,7 +38,7 @@ void CGameManager::Run( void )
 		{
 			ImGui::SFML::ProcessEvent( WindowEvent );
 
-			if( WindowEvent.type == sf::Event::Closed || sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
+			if( WindowEvent.type == sf::Event::Closed )
 				m_Window.close();
 		}
 
@@ -93,6 +93,9 @@ void CGameManager::ImGui( float DeltaTime )
 
 void CGameManager::Input( void )
 {
+	if( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
+		m_Window.close();
+
 	if( m_pGame && m_pGame->GetPopulation() == 1 )
 	{
 		if( m_pGame->GetBestGame() )

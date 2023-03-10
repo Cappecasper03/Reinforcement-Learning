@@ -23,9 +23,9 @@ public:
 	CAgent<CSnake>* GetAgent( void ) { return m_pAgent; }
 	CFood& GetFood( void ) { return m_Food; }
 
-private:
-	void Restart( void );
+	void Restart( void ) override;
 
+private:
 	CTimer m_FixedUpdateTimer;
 	float m_FixedUpdateTarget;
 

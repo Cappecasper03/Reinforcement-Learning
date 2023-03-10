@@ -84,8 +84,8 @@ void CGameManager::Render( void )
 
 	if( m_pGAGame )
 	{
-		if( m_pGAGame->GetBestGame() )
-			m_pGAGame->GetBestGame()->Render();
+		if( m_pGAGame->GetBestGameLastGen() )
+			m_pGAGame->GetBestGameLastGen()->Render();
 	}
 }
 
@@ -102,8 +102,8 @@ void CGameManager::ImGui( float DeltaTime )
 	{
 		if( m_pGAGame )
 		{
-			if( m_pGAGame->GetBestGame() )
-				m_pGAGame->GetBestGame()->ImGui();
+			if( m_pGAGame->GetBestGameLastGen() )
+				m_pGAGame->GetBestGameLastGen()->ImGui();
 		}
 	}
 
@@ -116,9 +116,9 @@ void CGameManager::Input( void )
 	if( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
 		m_Window.close();
 
-	if( m_pGAGame && m_pGAGame->GetPopulation() == 1 )
+	if( m_pGAGame && m_pGAGame->GetPopulation() <= 1 )
 	{
-		if( m_pGAGame->GetBestGame() )
-			m_pGAGame->GetBestGame()->Input();
+		if( m_pGAGame->GetBestGameLastGen() )
+			m_pGAGame->GetBestGameLastGen()->Input();
 	}
 }

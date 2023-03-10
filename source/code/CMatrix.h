@@ -11,6 +11,9 @@ public:
 	float& At( unsigned Column, unsigned Row ) { return m_Values[Row * m_Columns + Column]; }
 	const float& At( unsigned Column, unsigned Row )const { return m_Values[Row * m_Columns + Column]; }
 
+	float& operator[]( unsigned Index ) { return m_Values[Index]; }
+	const float& operator[]( unsigned Index ) const { return m_Values[Index]; }
+
 	std::vector<float>& GetValues( void ) { return m_Values; }
 
 	CMatrix Transposed( void );

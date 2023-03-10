@@ -9,7 +9,7 @@ class CGameSnake;
 class CFood
 {
 public:
-	CFood( void );
+	CFood( CGameSnake* pGame );
 	~CFood( void );
 
 	void Render( void ) { CGameManager::GetInstance().GetWindow().draw( m_Vertices ); }
@@ -24,5 +24,5 @@ private:
 	sf::Vector2f m_GridPos;
 	float m_Radius;
 
-	CGameSnake& m_rGame;
+	CGameSnake* m_pGame;
 };

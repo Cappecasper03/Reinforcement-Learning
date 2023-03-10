@@ -1,10 +1,11 @@
 #pragma once
 
 #include "CSingleton.h"
+#include "AI/CGeneticAlgorithm.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-class IGame;
+class CGameSnake;
 
 class CGameManager : public CSingleton<CGameManager>
 {
@@ -24,5 +25,5 @@ public:
 private:
 	sf::RenderWindow m_Window;
 
-	IGame* m_pGame;
+	CGeneticAlgorithm<CGameSnake>* m_pGame;
 };

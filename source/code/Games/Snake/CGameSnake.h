@@ -1,14 +1,14 @@
 #pragma once
 
 #include "../IGame.h"
-#include "CSingleton.h"
 #include "CGrid.h"
 #include "CSnake.h"
 #include "CFood.h"
 #include "CTimer.h"
 #include "CVector.h"
+#include "AI/CAgent.h"
 
-class CGameSnake : public IGame, public CSingleton<CGameSnake>
+class CGameSnake : public IGame
 {
 public:
 	CGameSnake( void );
@@ -20,7 +20,7 @@ public:
 	void Input( void ) override;
 
 	CGrid& GetGrid( void ) { return m_Grid; }
-	CSnake& GetSnake( void ) { return m_Snake; }
+	CAgent<CSnake>* GetAgent( void ) { return m_pAgent; }
 	CFood& GetFood( void ) { return m_Food; }
 
 private:
@@ -30,7 +30,7 @@ private:
 	float m_FixedUpdateTarget;
 
 	CGrid m_Grid;
-	CSnake m_Snake;
+	CAgent<CSnake>* m_pAgent;
 	CFood m_Food;
 
 	sf::Text m_Text;

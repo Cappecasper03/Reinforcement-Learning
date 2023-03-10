@@ -4,10 +4,12 @@
 
 #include <SFML/Graphics.hpp>
 
+class CGameSnake;
+
 class CGrid
 {
 public:
-	CGrid( unsigned GridSize );
+	CGrid( unsigned GridSize, CGameSnake* pGame );
 	~CGrid( void );
 
 	void Render( void ) { CGameManager::GetInstance().GetWindow().draw( m_Vertices ); }
@@ -35,4 +37,6 @@ private:
 	float m_TileSize;
 
 	SGridMinMax m_GridMinMax;
+
+	CGameSnake* m_pGame;
 };

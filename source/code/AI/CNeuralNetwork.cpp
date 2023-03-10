@@ -11,7 +11,7 @@ CNeuralNetwork::CNeuralNetwork( std::vector<unsigned>& rTopology )
 	, m_HiddenActivation( RELU )
 	, m_OutputActivation( SIGMOID )
 {
-	m_ValueMatrices.resize( m_Topology.size() );
+	m_ValueMatrices.resize( m_Topology.size(), 0 );
 
 	for( unsigned i = 0; i < m_Topology.size() - 1; i++ )
 	{
@@ -23,7 +23,7 @@ CNeuralNetwork::CNeuralNetwork( std::vector<unsigned>& rTopology )
 			m_WeightMatrices.push_back( std::move( WeightMatrix ) );
 		}
 
-		{	// Initalize random weights
+		{	// Initalize random biases
 			CMatrix BiasMatrix( m_Topology[i + 1], 1 );
 			for( float& rValue : BiasMatrix.GetValues() )
 				rValue = Random( 0.f, 1.f );
@@ -33,7 +33,7 @@ CNeuralNetwork::CNeuralNetwork( std::vector<unsigned>& rTopology )
 	}
 }
 
-bool CNeuralNetwork::Predict( std::vector<float>& rInputs )
+bool CNeuralNetwork::Predict( const std::vector<float>& rInputs )
 {
 	if( rInputs.size() != m_Topology[0] )
 		return false;
@@ -41,7 +41,7 @@ bool CNeuralNetwork::Predict( std::vector<float>& rInputs )
 	// Create input matrix
 	CMatrix InputMatrix( rInputs.size(), 1 );
 	for( unsigned i = 0; i < rInputs.size(); i++ )
-		InputMatrix.At( i, 0 ) = rInputs[i];
+		InputMatrix[i] = rInputs[i];
 
 	// Do feed forward calculations between layers
 	for( unsigned i = 0; i < m_WeightMatrices.size(); i++ )
@@ -62,13 +62,15 @@ bool CNeuralNetwork::Predict( std::vector<float>& rInputs )
 		}
 	}
 
-	m_ValueMatrices[m_WeightMatrices.size()] = InputMatrix;
+	m_ValueMatrices[m_WeightMatrices.size()] = std::move( InputMatrix );
 	return true;
 }
 
-void CNeuralNetwork::SaveModel( const std::string FileName )
+bool CNeuralNetwork::SaveModel( const std::string FileName )
 {
-	std::ofstream File( FileName );
+	std::ofstream File( "data/NNModels/" + FileName );
+	if( !File.is_open() )
+		return false;
 
 	File << "Topology: ";
 	for( unsigned& rValue : m_Topology )
@@ -103,11 +105,12 @@ void CNeuralNetwork::SaveModel( const std::string FileName )
 	File << m_OutputActivation << std::endl;
 
 	File.close();
+	return true;
 }
 
 bool CNeuralNetwork::LoadModel( const std::string FileName )
 {
-	std::ifstream File( FileName );
+	std::ifstream File( "data/NNModels/" + FileName );
 	if( !File.is_open() )
 		return false;
 
@@ -133,7 +136,7 @@ bool CNeuralNetwork::LoadModel( const std::string FileName )
 			else if( Words.front() == "Matrix:" )
 			{
 				if( Words.size() > 3 )
-					pMatrices->back().GetValues()[MatrixIndex++] = ( std::stof( Words.back() ) );
+					pMatrices->back()[MatrixIndex++] = ( std::stof( Words.back() ) );
 				else if( Words.size() > 2 )
 					pMatrices->push_back( CMatrix( std::stoi( Words[1] ), std::stoi( Words[2] ) ) );
 			}

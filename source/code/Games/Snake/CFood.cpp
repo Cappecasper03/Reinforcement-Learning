@@ -2,16 +2,14 @@
 #include "CGameSnake.h"
 #include "CRandom.h"
 
-CFood::CFood( void )
+CFood::CFood( CGameSnake* pGame )
 	: m_Vertices( sf::TriangleFan, 12 )
 	, m_GridPos( -1, -1 )
 	, m_Radius()
-	, m_rGame( CGameSnake::GetInstance() )
+	, m_pGame( pGame )
 {
 	for( unsigned i = 0; i < m_Vertices.getVertexCount(); i++ )
 		m_Vertices[i].color = sf::Color::Red;
-
-	RandomizePosition();
 }
 
 CFood::~CFood( void )
@@ -24,9 +22,9 @@ void CFood::ImGui( void )
 
 void CFood::RandomizePosition( void )
 {
-	CGrid& rGrid = m_rGame.GetGrid();
+	CGrid& rGrid = m_pGame->GetGrid();
 
-	m_Radius = m_rGame.GetGrid().GetTileSize() * .5f / 2;
+	m_Radius = m_pGame->GetGrid().GetTileSize() * .5f / 2;
 	int GridSize = rGrid.GetGridSize();
 	sf::Vector2f NewPosition( -1, -1 );
 	sf::Vector2f& rPosition = m_Vertices[0].position;
@@ -35,7 +33,7 @@ void CFood::RandomizePosition( void )
 	{
 		NewPosition.x = Random( 0, GridSize - 1 );
 		NewPosition.y = Random( 0, GridSize - 1 );
-	} while( rPosition == NewPosition || m_rGame.GetSnake().IsOnSnake( NewPosition ) );
+	} while( rPosition == NewPosition || m_pGame->GetAgent()->GetAgent()->IsOnSnake( NewPosition ) );
 
 	m_GridPos = NewPosition;
 	int VertexCount = m_Vertices.getVertexCount();

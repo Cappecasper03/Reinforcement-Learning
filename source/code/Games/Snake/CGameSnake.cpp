@@ -1,21 +1,24 @@
 #include "CGameSnake.h"
 #include "Managers/CFontManager.h"
 #include "Managers/CGameManager.h"
+#include "AI/CAgent.h"
 
 #include <imgui.h>
 
 CGameSnake::CGameSnake( void )
 	: m_FixedUpdateTimer()
 	, m_FixedUpdateTarget( .5f )
-	, m_Grid( 10 )
-	, m_Snake()
-	, m_Food()
+	, m_Grid( 10, this )
+	, m_pAgent( nullptr )
+	, m_Food( this )
 	, m_Text( "", *CFontManager::GetInstance().GetFont( "ForeverBatman" ) )
 	, m_FPSBuffer( 500 )
 	, m_FPSIndex( 0 )
 {
 	m_Text.move( sf::Vector2f( 10, 0 ) );
 	m_Text.scale( .6f, .6f );
+
+	m_pAgent = new CAgent<CSnake>( this );
 }
 
 CGameSnake::~CGameSnake( void )
@@ -37,24 +40,24 @@ void CGameSnake::Update( float DeltaTime )
 
 	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
 		return;
-	else if( m_Snake.IsDead() )
+	else if( m_pAgent->GetAgent()->IsDead() )
 	{
 		m_IsRestartable = true;
 		return;
 	}
 
 	m_FixedUpdateTimer.Update();
-	m_Snake.Update();
+	m_pAgent->Update( DeltaTime );
 }
 
 void CGameSnake::Render( void )
 {
 	m_Grid.Render();
 	m_Food.Render();
-	m_Snake.Render();
+	m_pAgent->GetAgent()->Render();
 
-	m_Text.setString( m_Text.getString() + "\n\n" + "Score: " + std::to_string( m_Snake.GetScore() ) );
-	m_Text.setString( m_Text.getString() + "\n" + "Steps Taken: " + std::to_string( m_Snake.GetStepsTaken() ) );
+	m_Text.setString( m_Text.getString() + "\n\n" + "Score: " + std::to_string( m_pAgent->GetAgent()->GetScore() ) );
+	m_Text.setString( m_Text.getString() + "\n" + "Steps Taken: " + std::to_string( m_pAgent->GetAgent()->GetStepsTaken() ) );
 	CGameManager::GetInstance().GetWindow().draw( m_Text );
 }
 
@@ -75,7 +78,7 @@ void CGameSnake::ImGui( void )
 
 	if( ImGui::BeginTabItem( "Snake" ) )
 	{
-		m_Snake.ImGui();
+		m_pAgent->GetAgent()->ImGui();
 
 		ImGui::EndTabItem();
 	}
@@ -99,15 +102,15 @@ void CGameSnake::ImGui( void )
 
 void CGameSnake::Input( void )
 {
-	m_Snake.Input();
-
-	if( m_IsRestartable && sf::Keyboard::isKeyPressed( sf::Keyboard::R ) )
+	m_pAgent->GetAgent()->Input();
+	
+	if( m_IsRestartable && ( sf::Keyboard::isKeyPressed( sf::Keyboard::R ) || sf::Keyboard::isKeyPressed( sf::Keyboard::Enter ) ) )
 		Restart();
 }
 
 void CGameSnake::Restart( void )
 {
 	m_IsRestartable = false;
-	m_Snake.Restart();
+	m_pAgent->GetAgent()->Restart();
 	m_Food.RandomizePosition();
 }

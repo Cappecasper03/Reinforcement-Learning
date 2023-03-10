@@ -3,11 +3,12 @@
 
 #include <imgui.h>
 
-CGrid::CGrid( unsigned GridSize )
+CGrid::CGrid( unsigned GridSize, CGameSnake* pGame )
 	: m_Vertices( sf::Lines, 0 )
 	, m_GridSize( GridSize )
 	, m_TileSize( 0 )
 	, m_GridMinMax()
+	, m_pGame( pGame )
 {
 	CreateGrid( GridSize );
 }
@@ -18,7 +19,7 @@ CGrid::~CGrid( void )
 
 void CGrid::ImGui( void )
 {
-	if( !CGameSnake::GetInstance().IsRestartable() )
+	if( !m_pGame->IsRestartable() )
 		return;
 
 	if( ImGui::InputInt( "Grid Size", ( int* )&m_GridSize, 2 ) )

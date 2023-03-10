@@ -24,7 +24,7 @@ CMatrix CMatrix::Transposed( void )
 			Result.At( Column, Row ) = At( Row, Column );
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 CMatrix CMatrix::MultiplyElements( const CMatrix& rOther )
@@ -39,7 +39,7 @@ CMatrix CMatrix::MultiplyElements( const CMatrix& rOther )
 			Result.At( Column, Row ) = At( Column, Row ) * rOther.At( Column, Row );
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 CMatrix CMatrix::operator*( const  CMatrix& rOther )
@@ -60,7 +60,7 @@ CMatrix CMatrix::operator*( const  CMatrix& rOther )
 		}
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 void CMatrix::operator*=( const CMatrix& rOther )
@@ -100,7 +100,7 @@ CMatrix CMatrix::operator*( const float Scalar )
 			Result.At( Column, Row ) = Value;
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 void CMatrix::operator*=( const float Scalar )
@@ -128,7 +128,7 @@ CMatrix CMatrix::operator+( const CMatrix& rOther )
 			Result.At( Column, Row ) = At( Column, Row ) + rOther.At( Column, Row );
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 void CMatrix::operator+=( const CMatrix& rOther )
@@ -152,7 +152,7 @@ CMatrix CMatrix::operator+( const float Scalar )
 			Result.At( Column, Row ) = At( Column, Row ) + Scalar;
 	}
 
-	return Result;
+	return std::move( Result );
 }
 
 void CMatrix::operator+=( const float Scalar )
@@ -171,5 +171,5 @@ CMatrix CMatrix::Negative( void )
 			Result.At( Column, Row ) = -At( Column, Row );
 	}
 
-	return Result;
+	return std::move( Result );
 }

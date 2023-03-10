@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AI/CAgent.h"
+
 class IGame
 {
 public:

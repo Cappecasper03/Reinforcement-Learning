@@ -1,21 +1,22 @@
 #pragma once
 
 #include "CVector.h"
+#include "AI/IAgent.h"
 
 #include <SFML/Graphics.hpp>
 
 class CGameSnake;
 
-class CSnake
+class CSnake : public IAgent
 {
 public:
-	CSnake( void );
+	CSnake( IGame* pGame );
 	~CSnake( void );
 
-	void Update( void );
-	void Render( void );
+	void Update( float DeltaTime = 0 ) override;
+	void Render( void ) override;
 	void ImGui( void );
-	void Input( void );
+	void Input( const std::vector<float>* pActions = nullptr ) override;
 
 	bool IsOnSnake( sf::Vector2f& rGridPoint );
 	bool IsDead( void );
@@ -48,5 +49,5 @@ private:
 	unsigned m_StepsTaken;
 	bool m_IsDead;
 
-	CGameSnake& m_rGame;
+	CGameSnake* m_pCastedGame;
 };

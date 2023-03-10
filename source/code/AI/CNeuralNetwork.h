@@ -18,14 +18,14 @@ public:
 	CNeuralNetwork( const std::string FileName ) { LoadModel( FileName ); }
 	CNeuralNetwork( std::vector<unsigned>& rTopology );
 
-	bool Predict( std::vector<float>& rInputs );
+	bool Predict( const std::vector<float>& rInputs );
 	float GetPrediction( unsigned OutputIndex ) { return m_ValueMatrices.back().GetValues()[OutputIndex]; }
 	const std::vector<float>& GetAllPredictions( void ) { return m_ValueMatrices.back().GetValues(); }
 
 	void SetHiddenActivation( EActivation Activation ) { m_HiddenActivation = Activation; }
 	void SetOutputActivation( EActivation Activation ) { m_OutputActivation = Activation; }
 
-	void SaveModel( const std::string FileName = "NeuralNetwork.txt" );
+	bool SaveModel( const std::string FileName = "NeuralNetwork.txt" );
 	bool LoadModel( const std::string FileName = "NeuralNetwork.txt" );
 
 private:

@@ -1,6 +1,5 @@
 #include "CGameManager.h"
 #include "CTimer.h"
-#include "Games/IGame.h"
 #include "Games/Snake/CGameSnake.h"
 #include "Managers/CFontManager.h"
 
@@ -15,7 +14,7 @@ CGameManager::CGameManager( void )
 	CFontManager::Initialize();
 	CFontManager::GetInstance().Load( "batmfa__.ttf", "ForeverBatman" );
 
-	m_pGame = new CGameSnake;
+	m_pGame = new CGeneticAlgorithm<CGameSnake>( 1 );
 }
 
 CGameManager::~CGameManager( void )
@@ -64,7 +63,10 @@ void CGameManager::Update( float DeltaTime )
 void CGameManager::Render( void )
 {
 	if( m_pGame )
-		m_pGame->Render();
+	{
+		if( m_pGame->GetBestGame() )
+			m_pGame->GetBestGame()->Render();
+	}
 }
 
 void CGameManager::ImGui( float DeltaTime )
@@ -79,7 +81,10 @@ void CGameManager::ImGui( float DeltaTime )
 	if( ImGui::Begin( "Game" ) )
 	{
 		if( m_pGame )
-			m_pGame->ImGui();
+		{
+			if( m_pGame->GetBestGame() )
+				m_pGame->GetBestGame()->ImGui();
+		}
 	}
 
 	ImGui::End();
@@ -88,6 +93,9 @@ void CGameManager::ImGui( float DeltaTime )
 
 void CGameManager::Input( void )
 {
-	if( m_pGame )
-		m_pGame->Input();
+	if( m_pGame && m_pGame->GetPopulation() == 1 )
+	{
+		if( m_pGame->GetBestGame() )
+			m_pGame->GetBestGame()->Input();
+	}
 }

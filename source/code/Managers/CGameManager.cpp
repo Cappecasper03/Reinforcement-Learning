@@ -9,20 +9,28 @@
 
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
-	, m_pGame( nullptr )
+	, m_pGAGame( nullptr )
+	, m_FPSText()
+	, m_FPSBuffer( 500 )
+	, m_FPSIndex( 0 )
 {
 	CFontManager::Initialize();
-	CFontManager::GetInstance().Load( "batmfa__.ttf", "ForeverBatman" );
+	CFontManager& rFontManager = CFontManager::GetInstance();
+	rFontManager.Load( "batmfa__.ttf", "ForeverBatman" );
 
-	m_pGame = new CGeneticAlgorithm<CGameSnake>( 1 );
+	m_FPSText.setFont( *rFontManager.GetFont( "ForeverBatman" ) );
+	m_FPSText.move( sf::Vector2f( 10, 00 ) );
+	m_FPSText.scale( .6f, .6f );
+
+	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 1 );
 }
 
 CGameManager::~CGameManager( void )
 {
 	CFontManager::Deinitialize();
 
-	if( m_pGame )
-		delete m_pGame;
+	if( m_pGAGame )
+		delete m_pGAGame;
 }
 
 void CGameManager::Run( void )
@@ -45,7 +53,7 @@ void CGameManager::Run( void )
 		Input();
 		Update( Timer.GetDeltaTime() );
 
-		m_Window.clear( sf::Color::Black );
+		m_Window.clear();
 		Render();
 		ImGui( Timer.GetDeltaTime( false ) );
 		m_Window.display();
@@ -56,16 +64,28 @@ void CGameManager::Run( void )
 
 void CGameManager::Update( float DeltaTime )
 {
-	if( m_pGame )
-		m_pGame->Update( DeltaTime );
+	{
+		m_FPSBuffer[m_FPSIndex] = 1 / DeltaTime;
+		m_FPSIndex = ( m_FPSIndex + 1 ) % m_FPSBuffer.size();
+		unsigned FPS = 0;
+		for( unsigned& rUnsigned : m_FPSBuffer )
+			FPS += rUnsigned;
+		FPS /= m_FPSBuffer.size();
+		m_FPSText.setString( "FPS: " + std::to_string( FPS ) );
+	}
+
+	if( m_pGAGame )
+		m_pGAGame->Update( DeltaTime );
 }
 
 void CGameManager::Render( void )
 {
-	if( m_pGame )
+	m_Window.draw( m_FPSText );
+
+	if( m_pGAGame )
 	{
-		if( m_pGame->GetBestGame() )
-			m_pGame->GetBestGame()->Render();
+		if( m_pGAGame->GetBestGame() )
+			m_pGAGame->GetBestGame()->Render();
 	}
 }
 
@@ -80,10 +100,10 @@ void CGameManager::ImGui( float DeltaTime )
 
 	if( ImGui::Begin( "Game" ) )
 	{
-		if( m_pGame )
+		if( m_pGAGame )
 		{
-			if( m_pGame->GetBestGame() )
-				m_pGame->GetBestGame()->ImGui();
+			if( m_pGAGame->GetBestGame() )
+				m_pGAGame->GetBestGame()->ImGui();
 		}
 	}
 
@@ -96,9 +116,9 @@ void CGameManager::Input( void )
 	if( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
 		m_Window.close();
 
-	if( m_pGame && m_pGame->GetPopulation() == 1 )
+	if( m_pGAGame && m_pGAGame->GetPopulation() == 1 )
 	{
-		if( m_pGame->GetBestGame() )
-			m_pGame->GetBestGame()->Input();
+		if( m_pGAGame->GetBestGame() )
+			m_pGAGame->GetBestGame()->Input();
 	}
 }

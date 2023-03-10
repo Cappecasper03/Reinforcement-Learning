@@ -34,6 +34,4 @@ private:
 	CFood m_Food;
 
 	sf::Text m_Text;
-	CVector<unsigned> m_FPSBuffer;
-	unsigned m_FPSIndex;
 };

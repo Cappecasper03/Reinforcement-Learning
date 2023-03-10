@@ -12,13 +12,12 @@ CGameSnake::CGameSnake( void )
 	, m_pAgent( nullptr )
 	, m_Food( this )
 	, m_Text( "", *CFontManager::GetInstance().GetFont( "ForeverBatman" ) )
-	, m_FPSBuffer( 500 )
-	, m_FPSIndex( 0 )
 {
-	m_Text.move( sf::Vector2f( 10, 0 ) );
+	m_Text.move( sf::Vector2f( 10, 50 ) );
 	m_Text.scale( .6f, .6f );
 
-	m_pAgent = new CAgent<CSnake>( this );
+	std::vector<unsigned> NNTopology = { 3, 5, 4 };
+	m_pAgent = new CAgent<CSnake>( this, NNTopology );
 }
 
 CGameSnake::~CGameSnake( void )
@@ -27,14 +26,6 @@ CGameSnake::~CGameSnake( void )
 
 void CGameSnake::Update( float DeltaTime )
 {
-	m_FPSBuffer[m_FPSIndex] = 1 / DeltaTime;
-	m_FPSIndex = ( m_FPSIndex + 1 ) % m_FPSBuffer.size();
-	unsigned FPS = 0;
-	for( unsigned& rUnsigned : m_FPSBuffer )
-		FPS += rUnsigned;
-	FPS /= m_FPSBuffer.size();
-	m_Text.setString( "FPS: " + std::to_string( FPS ) );
-
 	if( m_IsRestartable )
 		return;
 
@@ -56,7 +47,7 @@ void CGameSnake::Render( void )
 	m_Food.Render();
 	m_pAgent->GetAgent()->Render();
 
-	m_Text.setString( m_Text.getString() + "\n\n" + "Score: " + std::to_string( m_pAgent->GetAgent()->GetScore() ) );
+	m_Text.setString( "Score: " + std::to_string( m_pAgent->GetAgent()->GetScore() ) );
 	m_Text.setString( m_Text.getString() + "\n" + "Steps Taken: " + std::to_string( m_pAgent->GetAgent()->GetStepsTaken() ) );
 	CGameManager::GetInstance().GetWindow().draw( m_Text );
 }
@@ -103,7 +94,7 @@ void CGameSnake::ImGui( void )
 void CGameSnake::Input( void )
 {
 	m_pAgent->GetAgent()->Input();
-	
+
 	if( m_IsRestartable && ( sf::Keyboard::isKeyPressed( sf::Keyboard::R ) || sf::Keyboard::isKeyPressed( sf::Keyboard::Enter ) ) )
 		Restart();
 }

@@ -85,7 +85,7 @@ inline void CGeneticAlgorithm<T>::Update( float DeltaTime )
 			GenerationIsDead = false;
 	}
 
-	if( !GenerationIsDead )
+	if( !GenerationIsDead || m_GameAgents.size() <= 1 )
 		return;
 
 	CrossoverMutate( 50, 4 );

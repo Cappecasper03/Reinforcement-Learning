@@ -3,7 +3,7 @@
 #include "CSingleton.h"
 #include "AI/CGeneticAlgorithm.h"
 
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics.hpp>
 
 class CGameSnake;
 
@@ -25,5 +25,9 @@ public:
 private:
 	sf::RenderWindow m_Window;
 
-	CGeneticAlgorithm<CGameSnake>* m_pGame;
+	CGeneticAlgorithm<CGameSnake>* m_pGAGame;
+
+	sf::Text m_FPSText;
+	CVector<unsigned> m_FPSBuffer;
+	unsigned m_FPSIndex;
 };

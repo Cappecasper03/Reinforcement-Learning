@@ -29,11 +29,11 @@ public:
 
 	unsigned GetPopulation( void ) { return m_GameAgents.size(); }
 
-	IGame* GetBestGame( void ) { return m_pBestGame; }
+	IGame* GetBestGameLastGen( void ) { return m_pBestGameLastGen; }
 
 private:
 	CVector<SGameAgent> m_GameAgents;
-	IGame* m_pBestGame;
+	IGame* m_pBestGameLastGen;
 
 	unsigned m_Generation;
 };
@@ -41,11 +41,11 @@ private:
 template<typename T>
 inline CGeneticAlgorithm<T>::CGeneticAlgorithm( unsigned Population )
 	: m_GameAgents( Population, SGameAgent{ new T, nullptr } )
-	, m_pBestGame()
+	, m_pBestGameLastGen()
 	, m_Generation( 0 )
 {
 	if( m_GameAgents.size() > 0 )
-		m_pBestGame = m_GameAgents.front().pGame;
+		m_pBestGameLastGen = m_GameAgents.front().pGame;
 
 	// TODO: Increase performance
 	// Copy bias matrices from first agent to all other to make them have the same biases
@@ -67,7 +67,7 @@ inline CGeneticAlgorithm<T>::CGeneticAlgorithm( unsigned Population )
 template<typename T>
 inline CGeneticAlgorithm<T>::~CGeneticAlgorithm( void )
 {
-	m_pBestGame = nullptr;
+	m_pBestGameLastGen = nullptr;
 
 	for( SGameAgent& rGameAgent : m_GameAgents )
 		delete rGameAgent.pGame;
@@ -97,7 +97,7 @@ template<typename T>
 inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsigned NrOfParents )
 {
 	m_GameAgents.Sort( std::greater() );
-	m_pBestGame = m_GameAgents.front().pGame;
+	m_pBestGameLastGen = m_GameAgents.front().pGame;
 
 	for( unsigned AgentIndex = NrOfParents; AgentIndex < m_GameAgents.size(); AgentIndex++ )
 	{

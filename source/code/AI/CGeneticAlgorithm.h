@@ -51,7 +51,7 @@ private:
 
 template<typename T>
 inline CGeneticAlgorithm<T>::CGeneticAlgorithm( unsigned Population )
-	: m_GameAgents( Population, SGameAgent{ new T, nullptr } )
+	: m_GameAgents( Population, SGameAgent{ nullptr, nullptr } )
 	, m_pBestGameLastGen()
 	, m_Generation( 0 )
 {
@@ -59,7 +59,10 @@ inline CGeneticAlgorithm<T>::CGeneticAlgorithm( unsigned Population )
 		m_pBestGameLastGen = m_GameAgents.front().pGame;
 
 	for( SGameAgent& rGameAgents : m_GameAgents )
+	{
+		rGameAgents.pGame = new T;
 		rGameAgents.pAgent = rGameAgents.pGame->GetAgent();
+	}
 
 	// TODO: Increase performance
 	// Copy bias matrices from first agent to all other to make them have the same biases

@@ -16,6 +16,10 @@ public:
 
 	virtual CAgent<IAgent>* GetAgent( void ) = 0;
 
+	float GetGameSpeed( void ) { return m_GameSpeed; }
+	void SetGameSpeed( float NewGameSpeed ) { m_GameSpeed = NewGameSpeed; }
+
 protected:
 	bool m_IsRestartable = true;
+	float m_GameSpeed = 1;
 };

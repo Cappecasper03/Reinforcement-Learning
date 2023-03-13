@@ -27,7 +27,7 @@ public:
 
 	void Update( float DeltaTime );
 
-	// Mutation happens 1 / MutationChance
+	// Mutation happens 1 in MutationChance
 	// NrOfParents is how many of the agents will be untouched and those will also be the ones combined in all the other agents
 	void CrossoverMutate( unsigned MutationChance, unsigned NrOfParents );
 
@@ -40,6 +40,7 @@ public:
 
 	// Total/current generation this session
 	unsigned GetGeneration( void ) { return m_Generation; }
+	void IncreaseGeneration( void ) { m_Generation++; }
 
 private:
 	CVector<SGameAgent> m_GameAgents;
@@ -93,27 +94,13 @@ inline CGeneticAlgorithm<T>::~CGeneticAlgorithm( void )
 template<typename T>
 inline void CGeneticAlgorithm<T>::Update( float DeltaTime )
 {
-	bool GenerationIsDead = true;
 	for( SGameAgent& rGameAgent : m_GameAgents )
-	{
 		rGameAgent.pGame->Update( DeltaTime );
-
-		if( !rGameAgent.pGame->IsRestartable() )
-			GenerationIsDead = false;
-	}
-
-	if( !GenerationIsDead || m_GameAgents.size() <= 1 )
-		return;
-
-	CrossoverMutate( 50, 4 );
-	for( SGameAgent& rGameAgent : m_GameAgents )
-		rGameAgent.pGame->Restart();
 }
 
 template<typename T>
 inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsigned NrOfParents )
 {
-	m_Generation++;
 	m_GameAgents.Sort( std::greater() );
 	m_pBestGameLastGen = m_GameAgents.front().pGame;
 

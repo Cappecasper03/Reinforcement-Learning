@@ -35,4 +35,6 @@ private:
 	unsigned m_FPSIndex;
 
 	std::string m_AgentName;
+
+	float m_GameSpeed;
 };

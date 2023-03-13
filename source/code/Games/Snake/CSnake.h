@@ -22,7 +22,7 @@ public:
 	bool IsDead( void );
 	void AddBody( void );
 
-	unsigned GetStepsTaken( void ) { return m_StepsTaken; }
+	unsigned GetStepsLeft( void ) { return m_StepsLeft; }
 	unsigned GetScore( void ) { return m_Bodies.size() - 1; }
 
 	void Restart( void );
@@ -46,7 +46,7 @@ private:
 	CVector<SBody> m_Bodies;
 	sf::VertexArray m_VerticesBody;
 
-	unsigned m_StepsTaken;
+	int m_StepsLeft;
 	bool m_IsDead;
 
 	CGameSnake* m_pGame;

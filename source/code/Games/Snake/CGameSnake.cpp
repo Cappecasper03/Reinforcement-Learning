@@ -29,7 +29,7 @@ void CGameSnake::Update( float DeltaTime )
 	if( m_IsRestartable )
 		return;
 
-	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget )
+	if( m_FixedUpdateTimer.GetDeltaTime( false ) < m_FixedUpdateTarget / m_GameSpeed )
 		return;
 	else if( m_pAgent->GetAgent()->IsDead() )
 	{
@@ -48,7 +48,8 @@ void CGameSnake::Render( void )
 	m_pAgent->GetAgent()->Render();
 
 	m_Text.setString( "Score: " + std::to_string( m_pAgent->GetAgent()->GetScore() ) );
-	m_Text.setString( m_Text.getString() + "\n" + "Steps Taken: " + std::to_string( m_pAgent->GetAgent()->GetStepsTaken() ) );
+	m_Text.setString( m_Text.getString() + "\n" + "Steps Left: " + std::to_string( m_pAgent->GetAgent()->GetStepsLeft() ) );
+	m_Text.setString( m_Text.getString() + "\n" + "Fitness: " + std::to_string( m_pAgent->GetAgent()->GetFitness() ) );
 	CGameManager::GetInstance().GetWindow().draw( m_Text );
 }
 
@@ -108,6 +109,8 @@ void CGameSnake::CreateNewAgent( void )
 
 void CGameSnake::Restart( void )
 {
+	unsigned GridSize = m_Grid.GetGridSize();
+
 	for( float& rValue : m_AgentInputs )
 		rValue = 0;
 

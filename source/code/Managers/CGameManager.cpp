@@ -16,6 +16,7 @@ CGameManager::CGameManager( void )
 	, m_FPSBuffer( 500 )
 	, m_FPSIndex( 0 )
 	, m_AgentName( "Snake-10x10.txt" )
+	, m_GameSpeed( 1 )
 {
 	CFontManager::Initialize();
 	CFontManager& rFontManager = CFontManager::GetInstance();
@@ -25,7 +26,7 @@ CGameManager::CGameManager( void )
 	m_Text.move( sf::Vector2f( 10, 00 ) );
 	m_Text.scale( .6f, .6f );
 
-	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 50 );
+	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 100 );
 }
 
 CGameManager::~CGameManager( void )
@@ -102,7 +103,9 @@ void CGameManager::Update( float DeltaTime )
 
 	m_ShouldRestart = false;
 	if( m_pGAGame->GetGeneration() != 0 )
-		m_pGAGame->CrossoverMutate( 10, 2 );
+		m_pGAGame->CrossoverMutate( 50, 2 );
+
+	m_pGAGame->IncreaseGeneration();
 	for( unsigned i = 0; i < Population; i++ )
 		m_pGAGame->At( i )->Restart();
 }
@@ -113,8 +116,11 @@ void CGameManager::Render( void )
 
 	if( m_pGAGame )
 	{
-		if( m_pGAGame->GetBestGameLastGen() )
-			m_pGAGame->GetBestGameLastGen()->Render();
+		for( unsigned i = 0; i < m_pGAGame->GetPopulation(); i++ )
+		{
+			if( !m_pGAGame->At( i )->IsRestartable() )
+				m_pGAGame->At( i )->Render();
+		}
 	}
 }
 
@@ -152,9 +158,21 @@ void CGameManager::ImGui( float DeltaTime )
 				ImGui::EndTabItem();
 			}
 
+			if( ImGui::BeginTabItem( "Games" ) )
+			{
+				ImGui::Checkbox( "Auto Restart", &m_AutoRestart );
+				if( ImGui::SliderFloat( "Game Speed", &m_GameSpeed, 0.1, 1000 ) )
+				{
+					for( unsigned i = 0; i < m_pGAGame->GetPopulation(); i++ )
+						m_pGAGame->At( i )->SetGameSpeed( m_GameSpeed );
+				}
+
+				ImGui::EndTabItem();
+			}
+
 			if( m_pGAGame )
 			{
-				if( m_pGAGame->GetBestGameLastGen() )
+				if( m_pGAGame->GetBestGameLastGen() && m_pGAGame->GetPopulation() == 1 )
 					m_pGAGame->GetBestGameLastGen()->ImGui();
 			}
 		}

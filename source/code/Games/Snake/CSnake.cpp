@@ -16,13 +16,14 @@ CSnake::CSnake( IGame* pGame )
 	, m_HalfBodySize( 0 )
 	, m_Bodies()
 	, m_VerticesBody( sf::Triangles )
-	, m_StepsTaken( 0 )
+	, m_StepsLeft( 0 )
 	, m_IsDead( false )
 	, m_pGame( ( CGameSnake* )pGame )
 {
 	for( unsigned i = 0; i < m_VerticesHead.getVertexCount(); i++ )
 		m_VerticesHead[i].color = sf::Color::Green;
 
+	m_MoveDirection = s_Directions[Random( 0, 3 )];
 	Restart();
 }
 
@@ -32,7 +33,11 @@ CSnake::~CSnake( void )
 
 void CSnake::Update( float /*DeltaTime*/ )
 {
-	m_StepsTaken++;
+	m_StepsLeft--;
+	m_Fitness += .1f;
+
+	if( m_StepsLeft <= 0 )
+		m_IsDead = true;
 
 	for( int i = m_Bodies.size() - 1; i > 0; i-- )
 	{
@@ -58,16 +63,16 @@ void CSnake::Update( float /*DeltaTime*/ )
 		AddBody();
 		unsigned Tiles = pow( m_pGame->GetGrid().GetGridSize(), 2 );
 		if( m_Bodies.size() < Tiles )
+		{
 			m_pGame->GetFood().RandomizePosition();
+			m_StepsLeft += Tiles;
+			m_Fitness += 10;
+		}
 		else
 			m_IsDead = true;
 	}
 
-	sf::Vector2f& rHeadGridPos = m_Head.GridPosition;
-	m_pGame->UpdateAgentInput( rHeadGridPos.x, rHeadGridPos.y, 1 );
 	UpdateHeadVertices();
-
-	m_Fitness = GetScore();
 }
 
 void CSnake::Render( void )
@@ -91,9 +96,15 @@ void CSnake::Input( const std::vector<float>* pActions )
 		unsigned BestAction = 0;
 		for( unsigned i = 0; i < pActions->size(); i++ )
 		{
-			if( pActions->at( i ) > pActions->at( i ) )
+			if( pActions->at( i ) > pActions->at( BestAction ) )
 				BestAction = i;
 		}
+
+		if( ( s_Directions[BestAction] == sf::Vector2f( 0, 1 ) && m_Head.Direction == sf::Vector2f( 0, -1 ) ) ||
+			( s_Directions[BestAction] == sf::Vector2f( 0, -1 ) && m_Head.Direction == sf::Vector2f( 0, 1 ) ) ||
+			( s_Directions[BestAction] == sf::Vector2f( 1, 0 ) && m_Head.Direction == sf::Vector2f( -1, 0 ) ) ||
+			( s_Directions[BestAction] == sf::Vector2f( -1, 0 ) && m_Head.Direction == sf::Vector2f( 1, 0 ) ) )
+			return;
 
 		m_MoveDirection = s_Directions[BestAction];
 		return;
@@ -213,6 +224,7 @@ void CSnake::AddBody( void )
 
 void CSnake::Restart( void )
 {
+	m_Fitness = 0;
 	m_IsDead = false;
 	m_Bodies.clear();
 	m_VerticesBody.clear();
@@ -220,8 +232,11 @@ void CSnake::Restart( void )
 	CGrid& rGrid = m_pGame->GetGrid();
 	m_HeadRadius = rGrid.GetTileSize() * .4f;
 	m_Head.GridPosition = sf::Vector2f( ( float )( rGrid.GetGridSize() / 2 ), ( float )( rGrid.GetGridSize() / 2 ) - 1 );
-	m_Head.Direction = sf::Vector2f( 0, 1 );
+	m_Head.Direction = m_MoveDirection;
 
+	m_StepsLeft = rGrid.GetGridSize() * rGrid.GetGridSize();
+
+	m_Head.GridPosition -= m_MoveDirection;
 	UpdateHeadVertices();
 
 	m_HalfBodySize = rGrid.GetTileSize() * .3f;

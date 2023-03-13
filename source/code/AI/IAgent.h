@@ -14,6 +14,7 @@ public:
 	// pActions is the agents predicted actions
 	virtual void Input( const std::vector<float>* pActions = nullptr ) = 0;
 
+	float GetFitness( void ) { return m_Fitness; }
 	void AddToFitness( float Amount ) { m_Fitness += Amount; }
 
 	bool operator<( const IAgent& rOther ) { return m_Fitness < rOther.m_Fitness; }

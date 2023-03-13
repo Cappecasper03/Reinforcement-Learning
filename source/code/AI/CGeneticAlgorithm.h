@@ -23,6 +23,8 @@ public:
 	CGeneticAlgorithm( unsigned Population );
 	~CGeneticAlgorithm( void );
 
+	IGame* At( unsigned Index ) { return m_GameAgents[Index].pGame; }
+
 	void Update( float DeltaTime );
 
 	// Mutation happens 1 / MutationChance
@@ -36,10 +38,14 @@ public:
 	bool SaveBestModel( std::string FileName ) { return m_pBestGameLastGen->GetAgent()->GetNeuralNetwork().SaveModel( FileName ); }
 	bool LoadModel( std::string FileName );
 
+	// Total/current generation this session
+	unsigned GetGeneration( void ) { return m_Generation; }
+
 private:
 	CVector<SGameAgent> m_GameAgents;
 	IGame* m_pBestGameLastGen;
 
+	// Total/current generation this session
 	unsigned m_Generation;
 };
 
@@ -51,6 +57,9 @@ inline CGeneticAlgorithm<T>::CGeneticAlgorithm( unsigned Population )
 {
 	if( m_GameAgents.size() > 0 )
 		m_pBestGameLastGen = m_GameAgents.front().pGame;
+
+	for( SGameAgent& rGameAgents : m_GameAgents )
+		rGameAgents.pAgent = rGameAgents.pGame->GetAgent();
 
 	// TODO: Increase performance
 	// Copy bias matrices from first agent to all other to make them have the same biases
@@ -101,6 +110,7 @@ inline void CGeneticAlgorithm<T>::Update( float DeltaTime )
 template<typename T>
 inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsigned NrOfParents )
 {
+	m_Generation++;
 	m_GameAgents.Sort( std::greater() );
 	m_pBestGameLastGen = m_GameAgents.front().pGame;
 
@@ -118,12 +128,13 @@ inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsi
 				float& rWeightValue = rWeightMatrix[ValueIndex];
 
 				// Gets a random parents weight matrices
-				std::vector<CMatrix>& rParentWeightMatrices = m_GameAgents[Random( 0, NrOfParents - 1 )].pAgent->GetNeuralNetwork().GetWeightMatrices();
+				unsigned RandomAgent = Random( 0, NrOfParents - 1 );
+				std::vector<CMatrix>& rParentWeightMatrices = m_GameAgents[RandomAgent].pAgent->GetNeuralNetwork().GetWeightMatrices();
 				// and chooses the value in the same matrix and value index
 				rWeightValue = rParentWeightMatrices[MatrixIndex][ValueIndex];
 
 				if( Random( 0, MutationChance - 1 ) == 0 )
-					rWeightValue = Random( 0.f, 1.f ); // TODO: Maybe not hardcode random values
+					rWeightValue = Random( -1.f, 1.f ); // TODO: Maybe not hardcode random values
 			}
 		}
 	}

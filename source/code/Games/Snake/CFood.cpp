@@ -35,7 +35,10 @@ void CFood::RandomizePosition( void )
 		NewPosition.y = Random( 0, GridSize - 1 );
 	} while( rPosition == NewPosition || m_pGame->GetSnake()->GetAgent()->IsOnSnake( NewPosition ) );
 
+	m_pGame->UpdateAgentInput( m_GridPos.x, m_GridPos.y, 0 );
 	m_GridPos = NewPosition;
+	m_pGame->UpdateAgentInput( m_GridPos.x, m_GridPos.y, 2 );
+
 	int VertexCount = m_Vertices.getVertexCount();
 	rPosition = rGrid.GridToScreen( NewPosition );
 

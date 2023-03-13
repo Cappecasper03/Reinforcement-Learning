@@ -49,7 +49,7 @@ private:
 	unsigned m_StepsTaken;
 	bool m_IsDead;
 
-	CGameSnake* m_pCastedGame;
+	CGameSnake* m_pGame;
 
 	static const sf::Vector2f s_Directions[4];
 };

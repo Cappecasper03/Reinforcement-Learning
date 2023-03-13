@@ -23,7 +23,10 @@ void CGrid::ImGui( void )
 		return;
 
 	if( ImGui::InputInt( "Grid Size", ( int* )&m_GridSize, 2 ) )
+	{
 		CreateGrid( m_GridSize );
+		m_pGame->CreateNewAgent();
+	}
 }
 
 void CGrid::CreateGrid( unsigned GridSize )

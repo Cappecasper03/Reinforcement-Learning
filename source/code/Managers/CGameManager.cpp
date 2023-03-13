@@ -10,7 +10,9 @@
 CGameManager::CGameManager( void )
 	: m_Window( sf::VideoMode( 1200, 800 ), "Reinfocment Learning" )
 	, m_pGAGame( nullptr )
-	, m_FPSText()
+	, m_AutoRestart( true )
+	, m_ShouldRestart( false )
+	, m_Text()
 	, m_FPSBuffer( 500 )
 	, m_FPSIndex( 0 )
 	, m_AgentName( "Snake-10x10.txt" )
@@ -19,11 +21,11 @@ CGameManager::CGameManager( void )
 	CFontManager& rFontManager = CFontManager::GetInstance();
 	rFontManager.Load( "batmfa__.ttf", "ForeverBatman" );
 
-	m_FPSText.setFont( *rFontManager.GetFont( "ForeverBatman" ) );
-	m_FPSText.move( sf::Vector2f( 10, 00 ) );
-	m_FPSText.scale( .6f, .6f );
+	m_Text.setFont( *rFontManager.GetFont( "ForeverBatman" ) );
+	m_Text.move( sf::Vector2f( 10, 00 ) );
+	m_Text.scale( .6f, .6f );
 
-	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 1 );
+	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 50 );
 }
 
 CGameManager::~CGameManager( void )
@@ -72,16 +74,42 @@ void CGameManager::Update( float DeltaTime )
 		for( unsigned& rUnsigned : m_FPSBuffer )
 			FPS += rUnsigned;
 		FPS /= m_FPSBuffer.size();
-		m_FPSText.setString( "FPS: " + std::to_string( FPS ) );
+		m_Text.setString( "FPS: " + std::to_string( FPS ) );
+
+		m_Text.setString( m_Text.getString() + "\n\nPopulation: " + std::to_string( m_pGAGame->GetPopulation() ) );
+		m_Text.setString( m_Text.getString() + "\nGeneration: " + std::to_string( m_pGAGame->GetGeneration() ) );
 	}
 
 	if( m_pGAGame )
 		m_pGAGame->Update( DeltaTime );
+
+	if( !m_AutoRestart )
+		return;
+
+	m_ShouldRestart = true;
+	unsigned Population = m_pGAGame->GetPopulation();
+	for( unsigned i = 0; i < Population; i++ )
+	{
+		if( !m_pGAGame->At( i )->IsRestartable() )
+		{
+			m_ShouldRestart = false;
+			break;
+		}
+	}
+
+	if( !m_ShouldRestart )
+		return;
+
+	m_ShouldRestart = false;
+	if( m_pGAGame->GetGeneration() != 0 )
+		m_pGAGame->CrossoverMutate( 10, 2 );
+	for( unsigned i = 0; i < Population; i++ )
+		m_pGAGame->At( i )->Restart();
 }
 
 void CGameManager::Render( void )
 {
-	m_Window.draw( m_FPSText );
+	m_Window.draw( m_Text );
 
 	if( m_pGAGame )
 	{
@@ -103,19 +131,19 @@ void CGameManager::ImGui( float DeltaTime )
 	{
 		if( ImGui::BeginTabBar( "GameBar" ) )
 		{
-			if( ImGui::BeginTabItem( "Agent" ) )
+			if( ImGui::BeginTabItem( "GA Agents" ) )
 			{
 				char* pBuffer = m_AgentName.data();
-				if( ImGui::InputText( "Agent Name", pBuffer, m_AgentName.size() + 10 ) )
+				if( ImGui::InputText( "Agents Name", pBuffer, m_AgentName.size() + 10 ) )
 					m_AgentName = pBuffer;
 
-				if( ImGui::Button( "Save Agent by Name" ) )
+				if( ImGui::Button( "Save Agents by Name" ) )
 				{
 					if( m_pGAGame )
 						m_pGAGame->SaveBestModel( m_AgentName );
 				}
 
-				if( ImGui::Button( "Load Agent by Name" ) )
+				if( ImGui::Button( "Load Agents by Name" ) )
 				{
 					if( m_pGAGame )
 						m_pGAGame->LoadModel( m_AgentName );
@@ -143,7 +171,7 @@ void CGameManager::Input( void )
 	if( sf::Keyboard::isKeyPressed( sf::Keyboard::Escape ) )
 		m_Window.close();
 
-	if( m_pGAGame && m_pGAGame->GetPopulation() <= 1 )
+	if( m_pGAGame && m_pGAGame->GetPopulation() == 1 )
 	{
 		if( m_pGAGame->GetBestGameLastGen() )
 			m_pGAGame->GetBestGameLastGen()->Input();

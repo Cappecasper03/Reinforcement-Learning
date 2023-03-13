@@ -27,8 +27,10 @@ private:
 	sf::RenderWindow m_Window;
 
 	CGeneticAlgorithm<CGameSnake>* m_pGAGame;
+	bool m_AutoRestart;
+	bool m_ShouldRestart;
 
-	sf::Text m_FPSText;
+	sf::Text m_Text;
 	CVector<unsigned> m_FPSBuffer;
 	unsigned m_FPSIndex;
 

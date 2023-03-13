@@ -23,6 +23,10 @@ public:
 	CAgent<CSnake>* GetSnake( void ) { return m_pAgent; }
 	CFood& GetFood( void ) { return m_Food; }
 
+	void CreateNewAgent( void );
+	// Updates value for specific tile on grid
+	void UpdateAgentInput( unsigned X, unsigned Y, float NewValue ) { m_AgentInputs[Y * X + X] = NewValue; }
+
 	void Restart( void ) override;
 
 	CAgent<IAgent>* GetAgent( void ) { return ( CAgent<IAgent>* )m_pAgent; }
@@ -32,8 +36,10 @@ private:
 	float m_FixedUpdateTarget;
 
 	CGrid m_Grid;
+	std::vector<float> m_AgentInputs;
 	CAgent<CSnake>* m_pAgent;
 	CFood m_Food;
 
 	sf::Text m_Text;
+
 };

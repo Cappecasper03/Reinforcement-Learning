@@ -9,15 +9,15 @@ CGameSnake::CGameSnake( void )
 	: m_FixedUpdateTimer()
 	, m_FixedUpdateTarget( .5f )
 	, m_Grid( 10, this )
+	, m_AgentInputs( 100, 0 )
 	, m_pAgent( nullptr )
 	, m_Food( this )
 	, m_Text( "", *CFontManager::GetInstance().GetFont( "ForeverBatman" ) )
 {
-	m_Text.move( sf::Vector2f( 10, 50 ) );
+	m_Text.move( sf::Vector2f( 10, 100 ) );
 	m_Text.scale( .6f, .6f );
 
-	std::vector<unsigned> NNTopology = { 3, 5, 4 };
-	m_pAgent = new CAgent<CSnake>( this, NNTopology );
+	CreateNewAgent();
 }
 
 CGameSnake::~CGameSnake( void )
@@ -38,7 +38,7 @@ void CGameSnake::Update( float DeltaTime )
 	}
 
 	m_FixedUpdateTimer.Update();
-	m_pAgent->Update( DeltaTime );
+	m_pAgent->Update( DeltaTime, &m_AgentInputs );
 }
 
 void CGameSnake::Render( void )
@@ -94,8 +94,23 @@ void CGameSnake::Input( void )
 		Restart();
 }
 
+void CGameSnake::CreateNewAgent( void )
+{
+	unsigned GridSize = m_Grid.GetGridSize();
+	unsigned InputSize = GridSize * GridSize;
+	std::vector<unsigned> NNTopology = { InputSize, InputSize / 3, 4 };
+	m_AgentInputs.resize( InputSize, 0 );
+
+	if( m_pAgent )
+		delete m_pAgent;
+	m_pAgent = new CAgent<CSnake>( this, NNTopology );
+}
+
 void CGameSnake::Restart( void )
 {
+	for( float& rValue : m_AgentInputs )
+		rValue = 0;
+
 	m_IsRestartable = false;
 	m_pAgent->GetAgent()->Restart();
 	m_Food.RandomizePosition();

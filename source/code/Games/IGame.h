@@ -14,6 +14,8 @@ public:
 
 	virtual void Restart( void ) = 0;
 
+	virtual CAgent<IAgent>* GetAgent( void ) = 0;
+
 protected:
 	bool m_IsRestartable = true;
 };

@@ -54,9 +54,6 @@ void CGameSnake::Render( void )
 
 void CGameSnake::ImGui( void )
 {
-	if( !ImGui::BeginTabBar( "GameBar" ) )
-		return;
-
 	if( ImGui::BeginTabItem( "Game" ) )
 	{
 		ImGui::InputFloat( "Fixed Update", &m_FixedUpdateTarget, .01f, .1f );
@@ -87,8 +84,6 @@ void CGameSnake::ImGui( void )
 
 		ImGui::EndTabItem();
 	}
-
-	ImGui::EndTabBar();
 }
 
 void CGameSnake::Input( void )

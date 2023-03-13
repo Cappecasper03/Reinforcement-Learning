@@ -13,6 +13,7 @@ CGameManager::CGameManager( void )
 	, m_FPSText()
 	, m_FPSBuffer( 500 )
 	, m_FPSIndex( 0 )
+	, m_AgentName( "Snake-10x10.txt" )
 {
 	CFontManager::Initialize();
 	CFontManager& rFontManager = CFontManager::GetInstance();
@@ -100,11 +101,37 @@ void CGameManager::ImGui( float DeltaTime )
 
 	if( ImGui::Begin( "Game" ) )
 	{
-		if( m_pGAGame )
+		if( ImGui::BeginTabBar( "GameBar" ) )
 		{
-			if( m_pGAGame->GetBestGameLastGen() )
-				m_pGAGame->GetBestGameLastGen()->ImGui();
+			if( ImGui::BeginTabItem( "Agent" ) )
+			{
+				char* pBuffer = m_AgentName.data();
+				if( ImGui::InputText( "Agent Name", pBuffer, m_AgentName.size() + 10 ) )
+					m_AgentName = pBuffer;
+
+				if( ImGui::Button( "Save Agent by Name" ) )
+				{
+					if( m_pGAGame )
+						m_pGAGame->SaveBestModel( m_AgentName );
+				}
+
+				if( ImGui::Button( "Load Agent by Name" ) )
+				{
+					if( m_pGAGame )
+						m_pGAGame->LoadModel( m_AgentName );
+				}
+
+				ImGui::EndTabItem();
+			}
+
+			if( m_pGAGame )
+			{
+				if( m_pGAGame->GetBestGameLastGen() )
+					m_pGAGame->GetBestGameLastGen()->ImGui();
+			}
 		}
+
+		ImGui::EndTabBar();
 	}
 
 	ImGui::End();

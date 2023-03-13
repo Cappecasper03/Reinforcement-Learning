@@ -20,10 +20,12 @@ public:
 	void Input( void ) override;
 
 	CGrid& GetGrid( void ) { return m_Grid; }
-	CAgent<CSnake>* GetAgent( void ) { return m_pAgent; }
+	CAgent<CSnake>* GetSnake( void ) { return m_pAgent; }
 	CFood& GetFood( void ) { return m_Food; }
 
 	void Restart( void ) override;
+
+	CAgent<IAgent>* GetAgent( void ) { return ( CAgent<IAgent>* )m_pAgent; }
 
 private:
 	CTimer m_FixedUpdateTimer;

@@ -33,7 +33,7 @@ void CFood::RandomizePosition( void )
 	{
 		NewPosition.x = Random( 0, GridSize - 1 );
 		NewPosition.y = Random( 0, GridSize - 1 );
-	} while( rPosition == NewPosition || m_pGame->GetAgent()->GetAgent()->IsOnSnake( NewPosition ) );
+	} while( rPosition == NewPosition || m_pGame->GetSnake()->GetAgent()->IsOnSnake( NewPosition ) );
 
 	m_GridPos = NewPosition;
 	int VertexCount = m_Vertices.getVertexCount();

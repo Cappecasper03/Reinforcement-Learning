@@ -5,6 +5,8 @@
 #include "AI/CAgent.h"
 #include "CRandom.h"
 
+#include <string>
+
 template<typename T>
 class CGeneticAlgorithm
 {
@@ -30,6 +32,9 @@ public:
 	unsigned GetPopulation( void ) { return m_GameAgents.size(); }
 
 	IGame* GetBestGameLastGen( void ) { return m_pBestGameLastGen; }
+
+	bool SaveBestModel( std::string FileName ) { return m_pBestGameLastGen->GetAgent()->GetNeuralNetwork().SaveModel( FileName ); }
+	bool LoadModel( std::string FileName );
 
 private:
 	CVector<SGameAgent> m_GameAgents;
@@ -122,4 +127,17 @@ inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsi
 			}
 		}
 	}
+}
+
+template<typename T>
+inline bool CGeneticAlgorithm<T>::LoadModel( std::string FileName )
+{
+	bool AllWasLoaded = true;
+	for( SGameAgent& rGameAgent : m_GameAgents )
+	{
+		if( !rGameAgent.pAgent->GetNeuralNetwork().LoadModel( FileName ) )
+			AllWasLoaded = false;
+	}
+
+	return AllWasLoaded;
 }

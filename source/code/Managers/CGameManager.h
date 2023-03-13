@@ -4,6 +4,7 @@
 #include "AI/CGeneticAlgorithm.h"
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class CGameSnake;
 
@@ -30,4 +31,6 @@ private:
 	sf::Text m_FPSText;
 	CVector<unsigned> m_FPSBuffer;
 	unsigned m_FPSIndex;
+
+	std::string m_AgentName;
 };

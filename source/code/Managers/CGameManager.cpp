@@ -12,8 +12,9 @@ CGameManager::CGameManager( void )
 	, m_pGAGame( nullptr )
 	, m_AutoRestart( true )
 	, m_ShouldRestart( false )
+	, m_NrOfGamesToRender( 1 )
 	, m_Text()
-	, m_FPSBuffer( 500 )
+	, m_FPSBuffer( 60 )
 	, m_FPSIndex( 0 )
 	, m_AgentName( "Snake-10x10.txt" )
 	, m_GameSpeed( 1 )
@@ -26,7 +27,7 @@ CGameManager::CGameManager( void )
 	m_Text.move( sf::Vector2f( 10, 00 ) );
 	m_Text.scale( .6f, .6f );
 
-	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 100 );
+	m_pGAGame = new CGeneticAlgorithm<CGameSnake>( 50 );
 }
 
 CGameManager::~CGameManager( void )
@@ -116,11 +117,8 @@ void CGameManager::Render( void )
 
 	if( m_pGAGame )
 	{
-		for( unsigned i = 0; i < m_pGAGame->GetPopulation(); i++ )
-		{
-			if( !m_pGAGame->At( i )->IsRestartable() )
-				m_pGAGame->At( i )->Render();
-		}
+		for( unsigned i = 0; i < m_NrOfGamesToRender; i++ )
+			m_pGAGame->At( i )->Render();
 	}
 }
 
@@ -161,7 +159,9 @@ void CGameManager::ImGui( float DeltaTime )
 			if( ImGui::BeginTabItem( "Games" ) )
 			{
 				ImGui::Checkbox( "Auto Restart", &m_AutoRestart );
-				if( ImGui::SliderFloat( "Game Speed", &m_GameSpeed, 0.1, 1000 ) )
+				ImGui::SliderInt( "Games To Render", &m_NrOfGamesToRender, 1, m_pGAGame->GetPopulation() );
+
+				if( ImGui::SliderFloat( "Game Speed", &m_GameSpeed, 0.1, 100 ) )
 				{
 					for( unsigned i = 0; i < m_pGAGame->GetPopulation(); i++ )
 						m_pGAGame->At( i )->SetGameSpeed( m_GameSpeed );

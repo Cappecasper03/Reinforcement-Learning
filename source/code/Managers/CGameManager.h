@@ -29,6 +29,7 @@ private:
 	CGeneticAlgorithm<CGameSnake>* m_pGAGame;
 	bool m_AutoRestart;
 	bool m_ShouldRestart;
+	int m_NrOfGamesToRender;
 
 	sf::Text m_Text;
 	CVector<unsigned> m_FPSBuffer;

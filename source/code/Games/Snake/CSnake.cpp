@@ -252,7 +252,7 @@ void CSnake::Restart( void )
 	Update();
 
 	for( SBody& rBody : m_Bodies )
-		m_pGame->UpdateAgentInput( rBody.GridPosition.x, rBody.GridPosition.y, 1 );
+		m_pGame->UpdateAgentInput( rBody.GridPosition.x, rBody.GridPosition.y, -1 );
 
-	m_pGame->UpdateAgentInput( m_Head.GridPosition.x, m_Head.GridPosition.y, 2 );
+	m_pGame->UpdateAgentInput( m_Head.GridPosition.x, m_Head.GridPosition.y, .5f );
 }

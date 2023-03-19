@@ -25,7 +25,8 @@ public:
 
 	void CreateNewAgent( void );
 	// Updates value for specific tile on grid
-	void UpdateAgentInput( unsigned X, unsigned Y, float NewValue ) { m_AgentInputs[Y * X + X] = NewValue; }
+	void UpdateAgentInput( unsigned X, unsigned Y, float NewValue ) { m_AgentInputs[Y * m_Grid.GetGridSize() + X] = NewValue; }
+	void UpdateAgentInputs( void );
 
 	void Restart( void ) override;
 

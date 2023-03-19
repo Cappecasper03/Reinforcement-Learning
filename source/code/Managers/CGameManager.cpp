@@ -117,8 +117,18 @@ void CGameManager::Render( void )
 
 	if( m_pGAGame )
 	{
-		for( unsigned i = 0; i < m_NrOfGamesToRender; i++ )
-			m_pGAGame->At( i )->Render();
+		unsigned NrRendered = 0;
+		for( unsigned i = 0; i < m_pGAGame->GetPopulation(); i++ )
+		{
+			if( !m_pGAGame->At( i )->IsRestartable() )
+			{
+				NrRendered++;
+				m_pGAGame->At( i )->Render();
+			}
+
+			if( NrRendered >= m_NrOfGamesToRender )
+				break;
+		}
 	}
 }
 

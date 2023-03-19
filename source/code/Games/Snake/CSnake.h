@@ -22,6 +22,8 @@ public:
 	bool IsDead( void );
 	void AddBody( void );
 
+	const sf::Vector2f& GetHeadPos( void ) { return m_Head.GridPosition; }
+
 	unsigned GetStepsLeft( void ) { return m_StepsLeft; }
 	unsigned GetScore( void ) { return m_Bodies.size() - 1; }
 

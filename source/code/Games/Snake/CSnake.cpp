@@ -66,12 +66,14 @@ void CSnake::Update( float /*DeltaTime*/ )
 		{
 			m_pGame->GetFood().RandomizePosition();
 			m_StepsLeft += Tiles;
-			m_Fitness += 10;
+			m_Fitness += 1000;
 		}
 		else
 			m_IsDead = true;
 	}
 
+	if( !IsDead() )
+		m_pGame->UpdateAgentInput( m_Head.GridPosition.x, m_Head.GridPosition.y, .5f );
 	UpdateHeadVertices();
 }
 

@@ -4,7 +4,7 @@
 
 CFood::CFood( CGameSnake* pGame )
 	: m_Vertices( sf::TriangleFan, 12 )
-	, m_GridPos( -1, -1 )
+	, m_GridPos( 0, 0 )
 	, m_Radius()
 	, m_pGame( pGame )
 {

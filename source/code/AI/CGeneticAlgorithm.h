@@ -27,7 +27,7 @@ public:
 
 	void Update( float DeltaTime );
 
-	// Mutation happens 1 in MutationChance
+	// MutationChance is %
 	// NrOfParents is how many of the agents will be untouched and those will also be the ones combined in all the other agents
 	void CrossoverMutate( unsigned MutationChance, unsigned NrOfParents );
 
@@ -123,7 +123,7 @@ inline void CGeneticAlgorithm<T>::CrossoverMutate( unsigned MutationChance, unsi
 				// and chooses the value in the same matrix and value index
 				rWeightValue = rParentWeightMatrices[MatrixIndex][ValueIndex];
 
-				if( Random( 0, MutationChance - 1 ) == 0 )
+				if( Random( 0.f, 100.f ) <= MutationChance )
 					rWeightValue = Random( -1.f, 1.f ); // TODO: Maybe not hardcode random values
 			}
 		}

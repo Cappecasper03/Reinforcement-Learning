@@ -39,6 +39,7 @@ void CGameSnake::Update( float DeltaTime )
 
 	m_FixedUpdateTimer.Update();
 	m_pAgent->Update( DeltaTime, &m_AgentInputs );
+	UpdateAgentInputs();
 }
 
 void CGameSnake::Render( void )
@@ -98,13 +99,25 @@ void CGameSnake::Input( void )
 void CGameSnake::CreateNewAgent( void )
 {
 	unsigned GridSize = m_Grid.GetGridSize();
-	unsigned InputSize = GridSize * GridSize;
-	std::vector<unsigned> NNTopology = { InputSize, InputSize / 3, 4 };
+	unsigned InputSize = GridSize * GridSize + 2;
+	std::vector<unsigned> NNTopology = { InputSize, 120, 4 };
 	m_AgentInputs.resize( InputSize, 0 );
 
 	if( m_pAgent )
 		delete m_pAgent;
 	m_pAgent = new CAgent<CSnake>( this, NNTopology );
+}
+
+void CGameSnake::UpdateAgentInputs( void )
+{
+	const sf::Vector2f& SnakePos = m_pAgent->GetAgent()->GetHeadPos();
+	const sf::Vector2f& FoodPos = m_Food.GetGridPos();
+
+	sf::Vector2f Dir = FoodPos - SnakePos;
+	float DirLenght = abs( Dir.x ) + abs( Dir.y );
+
+	m_AgentInputs[m_AgentInputs.size() - 2] = Dir.x / DirLenght;
+	m_AgentInputs[m_AgentInputs.size() - 1] = Dir.y / DirLenght;
 }
 
 void CGameSnake::Restart( void )
